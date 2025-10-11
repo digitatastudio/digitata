@@ -20,7 +20,7 @@ export default function MentoringForm() {
       format: (form.elements.namedItem("format") as HTMLSelectElement).value,
     };
 
-    try {
+       try {
       const res = await fetch("/api/mentoring", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -28,11 +28,10 @@ export default function MentoringForm() {
       });
 
       if (!res.ok) {
-        // zkus JSON, jinak text
         let msg = "Server error";
         try {
           const j = await res.json();
-          msg = j?.error || msg;
+          msg = (j as { error?: string })?.error || msg;
         } catch {
           msg = await res.text();
         }
@@ -41,9 +40,10 @@ export default function MentoringForm() {
 
       setStatus("ok");
       form.reset();
-    } catch (err: any) {
+    } catch (err: unknown) {                    // ← žádné any
+      const msg = err instanceof Error ? err.message : "Něco se pokazilo. Zkus to prosím znovu.";
       setStatus("error");
-      setErrorMsg(err?.message || "Něco se pokazilo. Zkus to prosím znovu.");
+      setErrorMsg(msg);
     }
   }
 
