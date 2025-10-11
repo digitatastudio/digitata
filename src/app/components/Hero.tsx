@@ -6,13 +6,12 @@ export default function Hero() {
     <section className="relative h-screen flex items-center justify-center text-center text-white">
       {/* Background image */}
       <Image
-        src="/Sefi2.jpg"
-        alt="Já a dcera"
-        fill
-        priority
-        className="object-cover"
-      />
-
+  src="/images/sefi2.jpg"
+  alt="Já a dcera"
+  fill
+  priority
+  className="object-cover"
+/>
       {/* Overlays */}
       <div className="absolute inset-0 bg-black/50" />
       <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
