@@ -6,7 +6,7 @@ export default function Hero() {
     <section className="relative h-screen flex items-center justify-center text-center text-white">
       {/* Background image */}
       <Image
-  src="/images/sefi2.jpg"
+  src="/public/sefi2.jpg"
   alt="Já a dcera"
   fill
   priority
