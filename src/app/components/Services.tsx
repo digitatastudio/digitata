@@ -107,7 +107,7 @@ export default function Services() {
             icon={<FaVideo />}
             title="Online kurzy"
             description="Video kurzy plné praktických tipů pro táty"
-            href={process.env.NEXT_PUBLIC_YT_URL ?? "https://www.youtube.com/@digitata"}
+            href={process.env.NEXT_PUBLIC_YT_URL ?? "https://www.youtube.com/@digitata_studio"}
             newTab
           />
 
