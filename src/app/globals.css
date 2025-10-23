@@ -28,3 +28,19 @@ body {
 [data-modal-scroll] {
   -webkit-overflow-scrolling: touch;
 }
+/* zamknutí stránky při otevřeném modálu (funguje i na iOS) */
+html.modal-open, body.modal-open {
+  overflow: hidden;
+  height: 100%;
+}
+
+html.modal-open {
+  position: fixed;
+  width: 100%;
+  top: var(--scroll-lock-top, 0px);
+}
+
+/* hladší iOS scroll uvnitř modálu */
+[data-modal-scroll] {
+  -webkit-overflow-scrolling: touch;
+}
