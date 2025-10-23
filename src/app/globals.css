@@ -52,3 +52,14 @@ body.modal-open {
   width: 100%;
   overflow: hidden;
 }
+/* Tailwind scrollbars – tenké modré */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 45, 98, 0.6);
+  border-radius: 10px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
