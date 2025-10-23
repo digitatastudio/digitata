@@ -95,8 +95,8 @@ export default function Services() {
       </div>
 
       <MentoringModal open={mentorOpen} onClose={() => setMentorOpen(false)}>
-        <MentoringForm onSuccess={() => setMentorOpen(false)} />
-      </MentoringModal>
+  <MentoringForm onSuccess={() => setMentorOpen(false)} />
+</MentoringModal>
     </section>
   );
 }
