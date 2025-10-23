@@ -11,18 +11,23 @@ type Props = {
 export default function MentoringModal({ open, onClose, children }: Props) {
   useEffect(() => {
     if (open) {
-      // ✅ Zamknutí pozadí
+      // úplné zamknutí pozadí
       document.body.style.overflow = "hidden";
-      document.documentElement.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.touchAction = "none";
     } else {
-      // ✅ Obnovení při zavření
       document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.touchAction = "";
     }
 
     return () => {
       document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.touchAction = "";
     };
   }, [open]);
 
@@ -30,14 +35,16 @@ export default function MentoringModal({ open, onClose, children }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      // blokujeme všechny doteky mimo modal
       onClick={onClose}
+      onTouchMove={(e) => e.preventDefault()}
+      onWheel={(e) => e.preventDefault()}
     >
       <div
-        className="relative bg-white text-[#002D62] rounded-2xl shadow-2xl w-[92%] max-w-lg h-[80vh] overflow-y-scroll"
+        className="relative bg-white text-[#002D62] rounded-2xl shadow-2xl w-[92%] max-w-lg h-[80vh] overflow-y-auto overscroll-contain touch-pan-y"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Hlavička */}
         <div className="sticky top-0 flex items-center justify-between px-6 py-4 border-b bg-white">
           <h2 className="text-xl font-bold">Žádost o mentoring 1:1</h2>
           <button
@@ -49,7 +56,6 @@ export default function MentoringModal({ open, onClose, children }: Props) {
           </button>
         </div>
 
-        {/* Tělo formuláře */}
         <div className="px-6 py-5">{children}</div>
       </div>
     </div>
