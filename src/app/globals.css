@@ -62,4 +62,21 @@ body.modal-open {
 }
 .scrollbar-thin::-webkit-scrollbar-track {
   background: #f1f1f1;
+}/* ===== Lock pozadí při modalu (iOS-safe) ===== */
+html.modal-lock,
+body.modal-lock {
+  position: fixed;
+  width: 100%;
+  overflow: hidden !important;        /* nic za modalem se nehýbe */
+  overscroll-behavior: none;          /* zruší gumu */
+  touch-action: none;                 /* zruší gestové scrollování */
+}
+
+/* Scroll povolíme jen uvnitř boxu modalu */
+.modal-scroll {
+  max-height: 80vh;                   /* výška okna */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;  /* smooth na iOS */
+  overscroll-behavior: contain;       /* nepropadne na pozadí */
+  touch-action: pan-y;                /* jen vertikální scroll */
 }

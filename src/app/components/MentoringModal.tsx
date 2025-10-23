@@ -9,36 +9,55 @@ type Props = {
 };
 
 export default function MentoringModal({ open, onClose, children }: Props) {
-  // Zavírání pomocí ESC
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
+    const html = document.documentElement;
+    const body = document.body;
+
     if (open) {
-      document.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden"; // ✅ zablokuje posun stránky
+      const scrollY = window.scrollY;
+
+      html.classList.add("modal-lock");
+      body.classList.add("modal-lock");
+
+      // držíme přesnou pozici (jinak to poskočí)
+      body.style.top = `-${scrollY}px`;
+      body.dataset.scrollY = String(scrollY);
     } else {
-      document.body.style.overflow = "auto";
+      // odemknout a vrátit pozici
+      const prev = body.dataset.scrollY ? parseInt(body.dataset.scrollY, 10) : 0;
+
+      html.classList.remove("modal-lock");
+      body.classList.remove("modal-lock");
+
+      body.style.top = "";
+      delete body.dataset.scrollY;
+
+      window.scrollTo(0, prev);
     }
+
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "auto";
+      html.classList.remove("modal-lock");
+      body.classList.remove("modal-lock");
+      body.style.top = "";
+      delete body.dataset.scrollY;
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70"
+      className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center"
+      // gestům mimo modal řekneme “ne”
+      onWheel={(e) => e.preventDefault()}
+      onTouchMove={(e) => e.preventDefault()}
       onClick={onClose}
     >
-      {/* Modal box */}
       <div
-        className="relative bg-white text-[#002D62] rounded-2xl shadow-2xl w-[90%] max-w-lg max-h-[80vh] overflow-y-scroll touch-pan-y"
+        className="relative w-[92%] max-w-lg bg-white text-[#002D62] rounded-2xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Hlavička */}
+        {/* sticky hlavička */}
         <div className="sticky top-0 flex items-center justify-between px-6 py-4 border-b bg-white">
           <h2 className="text-xl font-bold">Žádost o mentoring 1:1</h2>
           <button
@@ -50,8 +69,8 @@ export default function MentoringModal({ open, onClose, children }: Props) {
           </button>
         </div>
 
-        {/* Obsah */}
-        <div className="px-6 py-5 space-y-4">{children}</div>
+        {/* scrolluje jen obsah modalu */}
+        <div className="modal-scroll px-6 py-5">{children}</div>
       </div>
     </div>
   );
