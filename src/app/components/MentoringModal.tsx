@@ -10,36 +10,19 @@ type Props = {
 
 export default function MentoringModal({ open, onClose, children }: Props) {
   useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
-
     if (open) {
-      const scrollY = window.scrollY;
-
-      html.classList.add("modal-lock");
-      body.classList.add("modal-lock");
-
-      // držíme přesnou pozici (jinak to poskočí)
-      body.style.top = `-${scrollY}px`;
-      body.dataset.scrollY = String(scrollY);
+      // ✅ Zamknutí pozadí
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
     } else {
-      // odemknout a vrátit pozici
-      const prev = body.dataset.scrollY ? parseInt(body.dataset.scrollY, 10) : 0;
-
-      html.classList.remove("modal-lock");
-      body.classList.remove("modal-lock");
-
-      body.style.top = "";
-      delete body.dataset.scrollY;
-
-      window.scrollTo(0, prev);
+      // ✅ Obnovení při zavření
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     }
 
     return () => {
-      html.classList.remove("modal-lock");
-      body.classList.remove("modal-lock");
-      body.style.top = "";
-      delete body.dataset.scrollY;
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     };
   }, [open]);
 
@@ -48,16 +31,13 @@ export default function MentoringModal({ open, onClose, children }: Props) {
   return (
     <div
       className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center"
-      // gestům mimo modal řekneme “ne”
-      onWheel={(e) => e.preventDefault()}
-      onTouchMove={(e) => e.preventDefault()}
       onClick={onClose}
     >
       <div
-        className="relative w-[92%] max-w-lg bg-white text-[#002D62] rounded-2xl shadow-2xl"
+        className="relative bg-white text-[#002D62] rounded-2xl shadow-2xl w-[92%] max-w-lg h-[80vh] overflow-y-scroll"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* sticky hlavička */}
+        {/* Hlavička */}
         <div className="sticky top-0 flex items-center justify-between px-6 py-4 border-b bg-white">
           <h2 className="text-xl font-bold">Žádost o mentoring 1:1</h2>
           <button
@@ -69,8 +49,8 @@ export default function MentoringModal({ open, onClose, children }: Props) {
           </button>
         </div>
 
-        {/* scrolluje jen obsah modalu */}
-        <div className="modal-scroll px-6 py-5">{children}</div>
+        {/* Tělo formuláře */}
+        <div className="px-6 py-5">{children}</div>
       </div>
     </div>
   );
