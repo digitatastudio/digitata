@@ -1,7 +1,8 @@
 "use client";
+
 import React from "react";
-import { FaUserFriends, FaVideo, FaPodcast } from "react-icons/fa";
 import Link from "next/link";
+import { FaUserFriends, FaVideo, FaPodcast } from "react-icons/fa";
 
 type CardProps = {
   icon: React.ReactNode;
@@ -12,25 +13,16 @@ type CardProps = {
 };
 
 function Card({ icon, title, description, href, newTab }: CardProps) {
-  const linkProps = newTab
-    ? { target: "_blank", rel: "noopener noreferrer" }
-    : {};
   return (
     <Link
       href={href}
-      {...linkProps}
+      {...(newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className="group bg-white p-10 rounded-2xl shadow-lg text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002D62]/30"
     >
-      <div
-        className="text-6xl mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
-        style={{ color: "#002D62" }}
-      >
+      <div className="text-6xl mx-auto mb-6 transition-transform duration-300 group-hover:scale-110" style={{ color: "#002D62" }}>
         {icon}
       </div>
-      <h3
-        className="text-4xl font-extrabold mb-6"
-        style={{ color: "#002D62" }}
-      >
+      <h3 className="text-4xl font-extrabold mb-6" style={{ color: "#002D62" }}>
         {title}
       </h3>
       <p className="text-lg md:text-xl text-gray-900 leading-relaxed font-medium group-hover:text-gray-700 transition-colors duration-300">
@@ -44,10 +36,7 @@ export default function Services() {
   return (
     <section id="services" className="py-16 bg-gray-100">
       <div className="container mx-auto px-6">
-        <h2
-          className="text-4xl font-bold text-center mb-12"
-          style={{ color: "#002D62" }}
-        >
+        <h2 className="text-4xl font-bold text-center mb-12" style={{ color: "#002D62" }}>
           Jak ti pomůžu
         </h2>
 
