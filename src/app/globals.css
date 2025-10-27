@@ -80,3 +80,13 @@ body.modal-lock {
   overscroll-behavior: contain;       /* nepropadne na pozadí */
   touch-action: pan-y;                /* jen vertikální scroll */
 }
+html, body {
+  height: 100%;
+}
+
+@supports (overscroll-behavior: contain) {
+  /* brání propadávání scrollu do pozadí */
+  body {
+    overscroll-behavior: contain;
+  }
+}
