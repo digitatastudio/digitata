@@ -1,28 +1,30 @@
 "use client";
+
 import React from "react";
 import Link from "next/link";
 import { FaUserFriends, FaVideo, FaPodcast } from "react-icons/fa";
 
-function Card({
-  icon,
-  title,
-  description,
-  href,
-  newTab,
-}: {
+type CardProps = {
   icon: React.ReactNode;
   title: string;
   description: string;
   href: string;
-  newTab?: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      {...(newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className="group bg-white p-10 rounded-2xl shadow-lg text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002D62]/30"
-    >
-      <div className="text-6xl mx-auto mb-6 transition-transform duration-300 group-hover:scale-110" style={{ color: "#002D62" }}>
+  newTab?: boolean; // pro externí linky
+};
+
+// Pokud je to externí URL, použijeme <a>, jinak Next <Link>
+function Card({ icon, title, description, href, newTab }: CardProps) {
+  const isExternal = /^https?:\/\//i.test(href);
+
+  const className =
+    "group bg-white p-10 rounded-2xl shadow-lg text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002D62]/30";
+
+  const IconWrap = (
+    <>
+      <div
+        className="text-6xl mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
+        style={{ color: "#002D62" }}
+      >
         {icon}
       </div>
       <h3 className="text-4xl font-extrabold mb-6" style={{ color: "#002D62" }}>
@@ -31,6 +33,26 @@ function Card({
       <p className="text-lg md:text-xl text-gray-900 leading-relaxed font-medium group-hover:text-gray-700 transition-colors duration-300">
         {description}
       </p>
+    </>
+  );
+
+  if (isExternal) {
+    return (
+      <a
+        href={href}
+        className={className}
+        target={newTab ? "_blank" : undefined}
+        rel={newTab ? "noopener noreferrer" : undefined}
+        aria-label={title}
+      >
+        {IconWrap}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={className} aria-label={title}>
+      {IconWrap}
     </Link>
   );
 }
@@ -39,7 +61,10 @@ export default function Services() {
   return (
     <section id="services" className="py-16 bg-gray-100">
       <div className="container mx-auto px-6">
-        <h2 className="text-4xl font-bold text-center mb-12" style={{ color: "#002D62" }}>
+        <h2
+          className="text-4xl font-bold text-center mb-12"
+          style={{ color: "#002D62" }}
+        >
           Jak ti pomůžu
         </h2>
 
@@ -48,7 +73,7 @@ export default function Services() {
             icon={<FaUserFriends />}
             title="Mentoring 1:1"
             description="Osobní mentoring pro tvůj růst a disciplínu."
-            href="/mentoring"
+            href="/mentoring" // interní route
           />
 
           <Card
