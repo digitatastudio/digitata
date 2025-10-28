@@ -96,3 +96,11 @@ export default function Services() {
     </section>
   );
 }
+// ...importy
+// uvnitř gridu karet:
+<Card
+  icon={<FaUserFriends />}
+  title="Mentoring 1:1"
+  description="Osobní mentoring pro tvůj růst a disciplínu."
+  href="/mentoring"
+/>
