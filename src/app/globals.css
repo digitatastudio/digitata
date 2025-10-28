@@ -111,3 +111,30 @@ body.modal-open {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch; /* iOS plynulý scroll */
 }
+/* -------- Modal hard lock -------- */
+html.modal-open,
+body.modal-open {
+  overflow: hidden !important;
+  height: 100%;
+  width: 100%;
+  position: fixed;         /* iOS-safe */
+}
+
+/* srovnání pozice po locku – uložíme top do CSS var */
+html.modal-open {
+  top: var(--lock-top, 0px);
+}
+
+/* aby se modal neproklikával a nic se “nepřetahovalo” */
+.modal-backdrop {
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+/* modal box má vlastní scroll a nepropaguje gesta */
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
