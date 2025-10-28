@@ -13,7 +13,7 @@ export default function MentoringModal({
 }) {
   const scrollYRef = useRef(0);
 
-  // ESC zavření
+  // Zavření na ESC
   useEffect(() => {
     if (!open) return;
     const onEsc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -21,23 +21,35 @@ export default function MentoringModal({
     return () => document.removeEventListener("keydown", onEsc);
   }, [open, onClose]);
 
-  // HARD LOCK – na <html> + vrácení pozice
+  // ✅ Úplné zamknutí pozadí (funguje i na iOS)
   useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
     if (!open) return;
 
-    scrollYRef.current =
+    const scrollY =
       window.scrollY || document.documentElement.scrollTop || 0;
+    scrollYRef.current = scrollY;
 
-    html.classList.add("modal-open");
-    body.classList.add("modal-open");
-    html.style.setProperty("--lock-top", `-${scrollYRef.current}px`);
+    const body = document.body;
+    const html = document.documentElement;
+
+    // Uloží aktuální pozici a zafixuje stránku
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    html.style.overflow = "hidden";
 
     return () => {
-      html.classList.remove("modal-open");
-      body.classList.remove("modal-open");
-      html.style.removeProperty("--lock-top");
+      // Reset po zavření
+      body.style.position = "";
+      body.style.top = "";
+      body.style.left = "";
+      body.style.right = "";
+      body.style.width = "";
+      body.style.overflow = "";
+      html.style.overflow = "";
       window.scrollTo(0, scrollYRef.current);
     };
   }, [open]);
@@ -46,22 +58,21 @@ export default function MentoringModal({
 
   return (
     <div className="fixed inset-0 z-[9999]">
-      {/* backdrop – zabije gesta + klik ven zavře */}
+      {/* Overlay (kliknutí mimo zavře) */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-[2px] modal-backdrop"
-        aria-hidden
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
-        onTouchMove={(e) => e.preventDefault()}
       />
 
-      {/* modal wrapper */}
+      {/* Modal okno */}
       <div className="absolute inset-0 flex items-center justify-center p-4">
         <div
           role="dialog"
           aria-modal="true"
-          className="w-full max-w-lg rounded-2xl bg-white text-[#002D62] shadow-2xl modal-content"
+          className="w-full max-w-lg bg-white text-[#002D62] rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
         >
-          <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b bg-white/95">
+          {/* Header */}
+          <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b bg-white">
             <h2 className="text-xl font-bold">Žádost o mentoring 1:1</h2>
             <button
               onClick={onClose}
@@ -72,6 +83,7 @@ export default function MentoringModal({
             </button>
           </div>
 
+          {/* Obsah */}
           <div className="px-6 py-5">{children}</div>
         </div>
       </div>
