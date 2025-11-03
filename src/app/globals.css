@@ -158,4 +158,26 @@ body.modal-open {
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+}/* Lock těla stránky při otevřeném modalu (funguje i na iOS) */
+html.modal-open,
+body.modal-open {
+  position: fixed;
+  inset: 0;              /* top:0; right:0; bottom:0; left:0; */
+  width: 100%;
+  overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+body.modal-open {
+  /* vracíme stránku na původní pozici – hodnotu plníš v JS do --scroll-y */
+  top: var(--scroll-y, 0);
+}
+
+/* Scroll uvnitř modalu, ne na pozadí */
+.modal-scroll {
+  max-height: 90vh;
+  overflow-y: auto;
+  overscroll-behavior: contain; /* zabrání “propadávání” scrollu ven */
+  -webkit-overflow-scrolling: touch; /* plynulý scroll na iOS */
 }

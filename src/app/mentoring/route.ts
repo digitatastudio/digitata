@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  console.log("MENTORING REQUEST:", body);
+  // TODO: validace + odeslání (email/webhook/db)
+  console.log("MENTORING_REQUEST:", body);
   return NextResponse.json({ ok: true });
 }

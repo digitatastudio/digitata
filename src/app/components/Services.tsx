@@ -69,12 +69,12 @@ export default function Services() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          <Card
-            icon={<FaUserFriends />}
-            title="Mentoring 1:1"
-            description="Osobní mentoring pro tvůj růst a disciplínu."
-            href="/mentoring" // interní route
-          />
+        <Card
+  icon={<FaUserFriends />}
+  title="Mentoring 1:1"
+  description="Osobní mentoring pro tvůj růst a disciplínu."
+  href="/mentoring"
+/>
 
           <Card
             icon={<FaVideo />}
