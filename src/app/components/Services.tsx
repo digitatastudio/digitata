@@ -9,17 +9,17 @@ type CardProps = {
   title: string;
   description: string;
   href: string;
-  newTab?: boolean; // pro externí linky
+  newTab?: boolean;
 };
 
-// Pokud je to externí URL, použijeme <a>, jinak Next <Link>
 function Card({ icon, title, description, href, newTab }: CardProps) {
   const isExternal = /^https?:\/\//i.test(href);
+  const linkProps = newTab ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
   const className =
     "group bg-white p-10 rounded-2xl shadow-lg text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002D62]/30";
 
-  const IconWrap = (
+  const Content = (
     <>
       <div
         className="text-6xl mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
@@ -36,23 +36,14 @@ function Card({ icon, title, description, href, newTab }: CardProps) {
     </>
   );
 
-  if (isExternal) {
-    return (
-      <a
-        href={href}
-        className={className}
-        target={newTab ? "_blank" : undefined}
-        rel={newTab ? "noopener noreferrer" : undefined}
-        aria-label={title}
-      >
-        {IconWrap}
-      </a>
-    );
-  }
-
-  return (
-    <Link href={href} className={className} aria-label={title}>
-      {IconWrap}
+  // Externí link → <a>, interní → <Link>. V obou případech funguje newTab.
+  return isExternal ? (
+    <a href={href} {...linkProps} className={className} aria-label={title}>
+      {Content}
+    </a>
+  ) : (
+    <Link href={href} {...linkProps} className={className} aria-label={title}>
+      {Content}
     </Link>
   );
 }
@@ -61,20 +52,18 @@ export default function Services() {
   return (
     <section id="services" className="py-16 bg-gray-100">
       <div className="container mx-auto px-6">
-        <h2
-          className="text-4xl font-bold text-center mb-12"
-          style={{ color: "#002D62" }}
-        >
+        <h2 className="text-4xl font-bold text-center mb-12" style={{ color: "#002D62" }}>
           Jak ti pomůžu
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <Card
-  icon={<FaUserFriends />}
-  title="Mentoring 1:1"
-  description="Osobní mentoring pro tvůj růst a disciplínu."
-  href="/mentoring"
-/>
+          <Card
+            icon={<FaUserFriends />}
+            title="Mentoring 1:1"
+            description="Osobní mentoring pro tvůj růst a disciplínu."
+            href="/mentoring"
+            newTab   // OTEVŘE /mentoring do nové záložky
+          />
 
           <Card
             icon={<FaVideo />}
@@ -96,11 +85,3 @@ export default function Services() {
     </section>
   );
 }
-// ...importy
-// uvnitř gridu karet:
-<Card
-  icon={<FaUserFriends />}
-  title="Mentoring 1:1"
-  description="Osobní mentoring pro tvůj růst a disciplínu."
-  href="/mentoring"
-/>
