@@ -1,3 +1,4 @@
+// src/app/components/Services.tsx
 "use client";
 
 import React from "react";
@@ -14,12 +15,10 @@ type CardProps = {
 
 function Card({ icon, title, description, href, newTab }: CardProps) {
   const isExternal = /^https?:\/\//i.test(href);
-  const linkProps = newTab ? { target: "_blank", rel: "noopener noreferrer" } : {};
-
   const className =
     "group bg-white p-10 rounded-2xl shadow-lg text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002D62]/30";
 
-  const Content = (
+  const Inner = (
     <>
       <div
         className="text-6xl mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
@@ -36,14 +35,28 @@ function Card({ icon, title, description, href, newTab }: CardProps) {
     </>
   );
 
-  // Externí link → <a>, interní → <Link>. V obou případech funguje newTab.
-  return isExternal ? (
-    <a href={href} {...linkProps} className={className} aria-label={title}>
-      {Content}
-    </a>
-  ) : (
-    <Link href={href} {...linkProps} className={className} aria-label={title}>
-      {Content}
+  if (isExternal) {
+    return (
+      <a
+        href={href}
+        className={className}
+        target={newTab ? "_blank" : undefined}
+        rel={newTab ? "noopener noreferrer" : undefined}
+        aria-label={title}
+      >
+        {Inner}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      prefetch={false}
+      className={className}
+      aria-label={title}
+    >
+      {Inner}
     </Link>
   );
 }
@@ -52,7 +65,10 @@ export default function Services() {
   return (
     <section id="services" className="py-16 bg-gray-100">
       <div className="container mx-auto px-6">
-        <h2 className="text-4xl font-bold text-center mb-12" style={{ color: "#002D62" }}>
+        <h2
+          className="text-4xl font-bold text-center mb-12"
+          style={{ color: "#002D62" }}
+        >
           Jak ti pomůžu
         </h2>
 
@@ -61,15 +77,17 @@ export default function Services() {
             icon={<FaUserFriends />}
             title="Mentoring 1:1"
             description="Osobní mentoring pro tvůj růst a disciplínu."
-            href="/mentoring"
-            newTab   // OTEVŘE /mentoring do nové záložky
+            href="/mentoring" // jde na stránku, žádný modal
           />
 
           <Card
             icon={<FaVideo />}
             title="Online kurzy"
             description="Video kurzy plné praktických tipů pro táty."
-            href={process.env.NEXT_PUBLIC_YT_URL ?? "https://www.youtube.com/@digitata_studio"}
+            href={
+              process.env.NEXT_PUBLIC_YT_URL ??
+              "https://www.youtube.com/@digitata_studio"
+            }
             newTab
           />
 
@@ -77,7 +95,9 @@ export default function Services() {
             icon={<FaPodcast />}
             title="Podcast"
             description="Otcovství, růst a reálné příběhy bez cenzury."
-            href={process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "https://open.spotify.com/"}
+            href={
+              process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "https://open.spotify.com/"
+            }
             newTab
           />
         </div>

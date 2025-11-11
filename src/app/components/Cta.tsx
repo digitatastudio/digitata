@@ -1,3 +1,6 @@
+// src/app/components/Cta.tsx
+import Link from "next/link";
+
 export default function Cta() {
   return (
     <section id="cta" className="py-16">
@@ -16,15 +19,15 @@ export default function Cta() {
                 praktický obsah a komunita táty, co táhnou dopředu.
               </p>
 
+              {/* CTA tlačítka */}
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <a
-                  href="#contact"
+                <Link
+                  href="/mentoring"
+                  prefetch={false}
                   className="inline-flex items-center justify-center rounded-xl bg-yellow-400 px-6 py-3 font-semibold text-[#002D62] shadow-lg transition hover:bg-yellow-300"
                 >
                   Začít hned
-                </a>
-
-                
+                </Link>
               </div>
 
               <ul className="mt-6 space-y-1 text-sm text-white/90">
