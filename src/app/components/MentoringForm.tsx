@@ -1,6 +1,7 @@
+// src/app/components/MentoringForm.tsx
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 
 type MentoringFormProps = {
   onSuccess?: () => void;
@@ -26,7 +27,7 @@ export default function MentoringForm({ onSuccess }: MentoringFormProps) {
       format: (form.elements.namedItem("format") as HTMLSelectElement)?.value,
     };
 
-    // jednoduché validace (mobil-friendly)
+    // validace
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
     if (!emailOk) {
       setStatus("error");
@@ -67,11 +68,14 @@ export default function MentoringForm({ onSuccess }: MentoringFormProps) {
       setStatus("ok");
       form.reset();
 
-      // krátká pauza kvůli animaci a pak zavřít modál
+      // případná success logika
       setTimeout(() => onSuccess?.(), 400);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      let msg = "Něco se pokazilo. Zkus to prosím znovu.";
+      if (err instanceof Error) msg = err.message;
+      else if (typeof err === "string") msg = err;
       setStatus("error");
-      setErrorMsg(err?.message || "Něco se pokazilo. Zkus to prosím znovu.");
+      setErrorMsg(msg);
     }
   }
 
@@ -149,15 +153,13 @@ export default function MentoringForm({ onSuccess }: MentoringFormProps) {
         />
       </div>
 
-      {/* Akce */}
       <div className="flex gap-3 pt-1">
-        {/* Zavřít řeší modal (křížek), tlačítko necháme jen odesílací */}
         <button
           type="submit"
           disabled={status === "sending"}
           aria-busy={status === "sending" ? "true" : "false"}
           className={`rounded-2xl bg-[#002D62] text-white px-5 py-3 font-semibold ${
-            status === "sending" ? "opacity-80 cursor-wait" : "hover:bg-[#003B88]"
+            status === "sending" ? "opacity-80 cursor-wait" : "hover:bg-[#003B88]"`
           }`}
         >
           {status === "sending" ? "Odesílám…" : "Chci začít s mentoringem"}
@@ -169,9 +171,7 @@ export default function MentoringForm({ onSuccess }: MentoringFormProps) {
           Díky! Ozvu se co nejdřív na e-mail.
         </p>
       )}
-      {status === "error" && (
-        <p className="text-red-600">{errorMsg}</p>
-      )}
+      {status === "error" && <p className="text-red-600">{errorMsg}</p>}
     </form>
   );
 }
