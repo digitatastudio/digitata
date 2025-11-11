@@ -1,19 +1,19 @@
-@import "tailwindcss";
+/* Tailwind správně, ne @import "tailwindcss" */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Nech Tailwind řídit velikosti a spacing.
-   ŽÁDNÉ :root, ŽÁDNÉ @theme, ŽÁDNÉ h1–h3 ani vlastní wrap/grid. */
-
+/* Base font – keep it simple */
 body {
-  /* jen bezpečný základ */
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Ponecháme jen utility, které jsi opravdu používal */
+/* Utility, které opravdu používáš */
 .shadow-text {
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
 }
 
-/* flip-card – jen pokud to ještě někde používáš */
+/* Volitelné: flip-card (jen pokud to někde reálně máš) */
 .flip-card { perspective: 1000px; }
 .flip-card-inner {
   position: relative; width: 100%; height: 100%;
@@ -24,160 +24,11 @@ body {
   position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
 }
 .flip-card-back { transform: rotateY(180deg); }
-/* plynulý iOS scroll uvnitř modálu */
-[data-modal-scroll] {
-  -webkit-overflow-scrolling: touch;
-}
-/* zamknutí stránky při otevřeném modálu (funguje i na iOS) */
-html.modal-open, body.modal-open {
-  overflow: hidden;
-  height: 100%;
-}
 
-html.modal-open {
-  position: fixed;
-  width: 100%;
-  top: var(--scroll-lock-top, 0px);
-}
-
-/* hladší iOS scroll uvnitř modálu */
-[data-modal-scroll] {
-  -webkit-overflow-scrolling: touch;
-}
-html, body { height: 100%; }
-
-/* aktivuje se při otevřeném modalu */
-body.modal-open {
-  position: fixed;
-  width: 100%;
-  overflow: hidden;
-}
-/* Tailwind scrollbars – tenké modré */
-.scrollbar-thin::-webkit-scrollbar {
-  width: 8px;
-}
+/* Volitelné: tenké scrollbary pro boxy, kde je to žádoucí */
+.scrollbar-thin::-webkit-scrollbar { width: 8px; }
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background-color: rgba(0, 45, 98, 0.6);
   border-radius: 10px;
 }
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}/* ===== Lock pozadí při modalu (iOS-safe) ===== */
-html.modal-lock,
-body.modal-lock {
-  position: fixed;
-  width: 100%;
-  overflow: hidden !important;        /* nic za modalem se nehýbe */
-  overscroll-behavior: none;          /* zruší gumu */
-  touch-action: none;                 /* zruší gestové scrollování */
-}
-
-/* Scroll povolíme jen uvnitř boxu modalu */
-.modal-scroll {
-  max-height: 80vh;                   /* výška okna */
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;  /* smooth na iOS */
-  overscroll-behavior: contain;       /* nepropadne na pozadí */
-  touch-action: pan-y;                /* jen vertikální scroll */
-}
-html, body {
-  height: 100%;
-}
-
-@supports (overscroll-behavior: contain) {
-  /* brání propadávání scrollu do pozadí */
-  body {
-    overscroll-behavior: contain;
-  }
-}
-/* ==== MODAL LOCK (tvrdej background lock) ==== */
-html.modal-open {
-  overflow: hidden;           /* desktop + Android */
-  height: 100%;
-  overscroll-behavior: none;  /* vypni pull-to-refresh/parent scroll */
-}
-
-body.modal-open {
-  position: fixed;            /* iOS fix */
-  inset: 0 0 auto 0;
-  width: 100%;
-  /* top nastavíme runtime podle scrollY – viz komponenta */
-}
-
-/* Scroll jen uvnitř obsahu modalu, ne přes rodiče */
-.modal-scroll {
-  max-height: 90vh;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch; /* iOS plynulý scroll */
-}
-/* -------- Modal hard lock -------- */
-html.modal-open,
-body.modal-open {
-  overflow: hidden !important;
-  height: 100%;
-  width: 100%;
-  position: fixed;         /* iOS-safe */
-}
-
-/* srovnání pozice po locku – uložíme top do CSS var */
-html.modal-open {
-  top: var(--lock-top, 0px);
-}
-
-/* aby se modal neproklikával a nic se “nepřetahovalo” */
-.modal-backdrop {
-  touch-action: none;
-  overscroll-behavior: none;
-}
-
-/* modal box má vlastní scroll a nepropaguje gesta */
-.modal-content {
-  max-height: 90vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-}
-/* --- Modal scroll lock --- */
-:root { --scroll-y: 0px; }
-
-html.modal-open,
-body.modal-open {
-  overflow: hidden !important;
-}
-
-body.modal-open {
-  position: fixed !important;
-  top: var(--scroll-y) !important;   /* vracíme se přesně tam, kde uživatel byl */
-  left: 0; right: 0; width: 100%;
-}
-
-/* kontejner uvnitř modalu, který se smí scrollovat */
-.modal-scroll {
-  max-height: 90vh;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-}/* Lock těla stránky při otevřeném modalu (funguje i na iOS) */
-html.modal-open,
-body.modal-open {
-  position: fixed;
-  inset: 0;              /* top:0; right:0; bottom:0; left:0; */
-  width: 100%;
-  overflow: hidden;
-  touch-action: none;
-  overscroll-behavior: none;
-}
-
-body.modal-open {
-  /* vracíme stránku na původní pozici – hodnotu plníš v JS do --scroll-y */
-  top: var(--scroll-y, 0);
-}
-
-/* Scroll uvnitř modalu, ne na pozadí */
-.modal-scroll {
-  max-height: 90vh;
-  overflow-y: auto;
-  overscroll-behavior: contain; /* zabrání “propadávání” scrollu ven */
-  -webkit-overflow-scrolling: touch; /* plynulý scroll na iOS */
-}
+.scrollbar-thin::-webkit-scrollbar-track { background: #f1f1f1; }
