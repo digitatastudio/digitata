@@ -1,7 +1,8 @@
-/* Tailwind správně, ne @import "tailwindcss" */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* tvoje vlastní styly pod tím */
 
 /* Base font – keep it simple */
 body {
@@ -32,3 +33,23 @@ body {
   border-radius: 10px;
 }
 .scrollbar-thin::-webkit-scrollbar-track { background: #f1f1f1; }
+/* decentní scrollbar pro kartu */
+.scroll-card {
+  scrollbar-width: thin;
+  scrollbar-color: #b7b7b7 transparent;
+}
+.scroll-card::-webkit-scrollbar { width: 8px; }
+.scroll-card::-webkit-scrollbar-thumb { background: #b7b7b7; border-radius: 999px; }
+.scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #002D62 #e5e7eb;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #002D62;
+  border-radius: 10px;
+}
