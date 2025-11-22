@@ -1,42 +1,34 @@
 // src/app/components/Hero.tsx
-// import Image from "next/image";  ← TOHLE SMAŽ
-
 export default function Hero() {
   return (
-    <section
-      className="
-        relative h-screen flex items-center justify-center text-center text-white
-        bg-gradient-to-b from-[#052b6b] to-[#001733]
-      "
-    >
-      {/* lehký tmavý overlay, ať text víc svítí */}
-      <div className="absolute inset-0 bg-black/30" />
+    <section className="relative flex h-screen items-center justify-center overflow-hidden text-center text-white">
+      {/* Pozadí: čistý CSS gradient, žádný obrázek */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#053569,_#00152a)]" />
 
-      {/* Content */}
+      {/* Jemné stmavení */}
+      <div className="absolute inset-0 bg-black/35" />
+
+      {/* Obsah */}
       <div className="relative z-10 px-4">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 drop-shadow-[0_5px_15px_rgba(0,0,0,0.9)]">
+        <h1 className="mb-4 text-5xl font-extrabold tracking-[0.15em] md:text-7xl">
           DIGITÁTA
         </h1>
 
-        <p className="text-2xl md:text-3xl font-bold mb-6">
-          Všechno začíná u <span className="text-[#4fa3ff]">tebe</span>.<br />
-          Ty jsi <span className="text-[#4fa3ff]">úspěch</span>.
+        <p className="mb-4 text-2xl md:text-3xl font-semibold">
+          Všechno začíná u <span className="text-blue-300">tebe</span>.
+          <br />
+          Ty jsi <span className="text-blue-300">úspěch</span>.
         </p>
 
-        <p className="text-base md:text-lg max-w-3xl mx-auto mb-10 leading-relaxed">
+        <p className="mx-auto mb-8 max-w-2xl text-base md:text-lg text-slate-100">
           Mentoring, inspirace a nástroje pro rodiče, kteří chtějí růst a
           budovat lepší život pro sebe i své děti.
         </p>
 
         <button
-          className="
-            inline-block rounded-xl font-bold py-3 px-10
-            bg-[#004aad] hover:bg-[#005fe0]
-            transition-transform hover:scale-105
-            shadow-lg
-          "
+          className="rounded-xl bg-[#002D62] px-10 py-4 text-sm font-semibold shadow-xl transition hover:scale-105 hover:bg-[#003b8f]"
           onClick={() => {
-            const el = document.querySelector("#about");
+            const el = document.getElementById("about");
             if (el) el.scrollIntoView({ behavior: "smooth" });
           }}
         >
