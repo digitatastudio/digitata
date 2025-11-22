@@ -1,49 +1,44 @@
-// src/app/components/Hero.tsx
-import Image from "next/image";
-
 export default function Hero() {
   return (
-    <section className="relative h-screen flex items-center justify-center text-center text-white">
-      {/* Background image */}
-      <Image
-        src="/sefi2-hero-4k.png"   // v public/, proto s lomítkem na začátku
-        alt="Já a dcera"
-        fill
-        priority
-        quality={100}
-        sizes="100vw"
-        className="object-cover"
-      />
-
-      {/* Overlays */}
-      <div className="absolute inset-0 bg-black/40" />
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
-
+    <section
+      className="
+        relative h-screen flex items-center justify-center text-center text-white
+        bg-gradient-to-b from-[#052b6b] to-[#001733]
+      "
+    >
+      {/* lehký tmavý overlay, ať text víc svítí */}
+      <div className="absolute inset-0 bg-black/30" />
 
       {/* Content */}
-      <div className="relative z-10">
-        <h1 className="text-7xl md:text-9xl font-extrabold text-white mb-6 drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)]">
+      <div className="relative z-10 px-4">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 drop-shadow-[0_5px_15px_rgba(0,0,0,0.9)]">
           DIGITÁTA
         </h1>
 
-        <p className="text-2xl md:text-4xl font-bold mb-6">
-          Všechno začíná u <span className="drop-shadow-[0_0_6px_blue]">tebe</span>.<br />
-          Ty jsi <span className="drop-shadow-[0_0_6px_blue]">úspěch</span>.
+        <p className="text-2xl md:text-3xl font-bold mb-6">
+          Všechno začíná u <span className="text-[#4fa3ff]">tebe</span>.<br />
+          Ty jsi <span className="text-[#4fa3ff]">úspěch</span>.
         </p>
 
-        <p className="text-lg md:text-2xl text-white max-w-3xl mx-auto mb-10 leading-relaxed font-semibold shadow-text">
+        <p className="text-base md:text-lg max-w-3xl mx-auto mb-10 leading-relaxed">
           Mentoring, inspirace a nástroje pro rodiče, kteří chtějí růst a
           budovat lepší život pro sebe i své děti.
         </p>
 
-        {/* CTA — brand blue #002D62 with white text */}
-        <a
-          href="#about"
-          className="inline-block rounded-xl font-bold py-4 px-10 shadow-2xl transition-transform hover:scale-105"
-          style={{ backgroundColor: "#002D62", color: "#ffffff" }}
+        <button
+          className="
+            inline-block rounded-xl font-bold py-3 px-10
+            bg-[#004aad] hover:bg-[#005fe0]
+            transition-transform hover:scale-105
+            shadow-lg
+          "
+          onClick={() => {
+            const el = document.querySelector("#about");
+            if (el) el.scrollIntoView({ behavior: "smooth" });
+          }}
         >
           Začni teď
-        </a>
+        </button>
       </div>
     </section>
   );
