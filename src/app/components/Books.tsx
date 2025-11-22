@@ -1,44 +1,30 @@
 // src/app/components/Books.tsx
-"use client";
 
-import Image from "next/image";
 type Book = {
   image: string;
   title: string;
   blurb: string;
-  variant: "free" | "buy";
-  imageLeft?: boolean;
+  variant: "free" | "paid";
 };
 
 function BookRow({ book }: { book: Book }) {
   const btnClass =
-    "bg-[#002D62] hover:bg-[#001a3d] text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300";
+    "mt-4 inline-block rounded-lg bg-[#002D62] px-6 py-3 text-sm font-semibold text-white opacity-70 cursor-not-allowed";
 
   return (
-    <article className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-      {/* Obrázek */}
-      <div className={book.imageLeft ? "order-1" : "order-1 md:order-2"}>
-        <img
-          src={book.image}
-          alt={book.title}
-          className="w-full h-72 object-cover rounded-2xl shadow-md"
-        />
-      </div>
+    <article className="flex flex-col items-center gap-6 text-center md:flex-row md:text-left">
+      <img
+        src={book.image}
+        alt={book.title}
+        className="w-64 h-auto rounded-xl shadow-lg"
+      />
 
-      {/* Text */}
-      <div className={book.imageLeft ? "order-2" : "order-2 md:order-1"}>
-        <h3 className="text-2xl md:text-3xl font-bold mb-3 text-[#002D62]">
-          {book.title}
-        </h3>
-        <p className="text-gray-700 leading-relaxed mb-5">{book.blurb}</p>
-        <button
-          disabled
-          title="Brzy dostupné"
-          className={btnClass}
-        >
-          {book.variant === "free"
-            ? "Stáhnout zdarma (brzy)"
-            : "Koupit (brzy)"}
+      <div>
+        <h3 className="mb-2 text-xl font-bold text-[#002D62]">{book.title}</h3>
+        <p className="mb-4 text-base text-slate-700">{book.blurb}</p>
+
+        <button disabled className={btnClass} title="Brzy dostupné">
+          {book.variant === "free" ? "Stáhnout zdarma (brzy)" : "Koupit (brzy)"}
         </button>
       </div>
     </article>
@@ -48,34 +34,21 @@ function BookRow({ book }: { book: Book }) {
 export default function Books() {
   const books: Book[] = [
     {
-      image: "/emocnirestart.jpg",
+      image: "/emo_restart.jpg",
       title: "Emoční restart: 7 dní k sobě",
       blurb:
         "Krátký program pro rodiče po těžkých chvílích. 7 dní, jasné mini-úkoly a návrat k vnitřnímu klidu.",
       variant: "free",
-      imageLeft: true,
     },
-    {
-      image: "/tatanafurt.jpg",
-      title: "Táta na furt",
-      blurb:
-        "Praktický průvodce pro tátu po rozchodu. Ego dolů, respekt nahoru. Jak udržet klid a vztah s dítětem.",
-      variant: "buy",
-      imageLeft: false,
-    },
+    // další knížky klidně doplníš později
   ];
 
   return (
-    <section id="books" className="py-20 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-12 tracking-tight text-[#002D62]">
-          Moje knihy & e-booky
-        </h2>
-        <div className="space-y-12">
-          {books.map((b) => (
-            <BookRow key={b.title} book={b} />
-          ))}
-        </div>
+    <section id="books" className="bg-slate-50 py-16">
+      <div className="mx-auto flex max-w-5xl flex-col gap-12 px-4">
+        {books.map((book) => (
+          <BookRow key={book.title} book={book} />
+        ))}
       </div>
     </section>
   );
