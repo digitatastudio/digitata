@@ -1,4 +1,7 @@
-// src/app/components/Hero.tsx
+"use client";
+
+import Image from "next/image";
+
 export default function Hero() {
   return (
     <section className="relative flex h-screen items-center justify-center overflow-hidden text-center text-white">
