@@ -1,4 +1,7 @@
 // src/app/components/Books.tsx
+"use client";
+
+import Image from "next/image";
 type Book = {
   image: string;
   title: string;
