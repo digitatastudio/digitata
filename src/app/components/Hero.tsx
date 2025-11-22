@@ -11,9 +11,9 @@ export default function Hero() {
       {/* Obsah */}
       <div className="relative z-10 px-4">
         <p className="mb-8 text-4xl md:text-6xl font-extrabold leading-tight text-white">
-          Všechno začíná u <span className="text-white">tebe</span>.
+          Všechno začíná u <span className="text-white">tebe</span>
           <br />
-          Ty jsi <span className="text-white">úspěch</span>.
+          Ty jsi <span className="text-white">úspěch</span>
         </p>
 
         <button
