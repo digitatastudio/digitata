@@ -4,21 +4,20 @@ import Image from "next/image";
 export default function Hero() {
   return (
     <section className="relative h-screen flex items-center justify-center text-center text-white">
-      
       {/* Background image */}
       <Image
-        src="/sefi2-hero-4k.png"   // ✔️ musí začínat / jinak to Next nenajde
+        src="/sefi2-hero-4k.png"   // v public/, proto s lomítkem na začátku
         alt="Já a dcera"
         fill
         priority
-        quality={100}              // ✔️ ostrost
+        quality={100}
         sizes="100vw"
         className="object-cover"
       />
 
       {/* Overlays */}
-      <div className="absolute inset-0 bg-black/50" />
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
 
 
       {/* Content */}
