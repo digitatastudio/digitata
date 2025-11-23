@@ -29,16 +29,15 @@ export default function Hero() {
         </button>
       </div>
 
-      {/* Vertikální logo DIGITÁTA vpravo dole */}
-      <div className="pointer-events-none absolute bottom-6 right-5 z-10 md:bottom-10 md:right-10">
-        <Image
-          src="/digitata-logo-vertical.png"
-          alt="DIGITÁTA"
-          width={32}
-          height={160}
-          className="opacity-70 md:opacity-80"
-        />
-      </div>
+     <div className="absolute bottom-6 right-6 z-20 opacity-80">
+  <Image
+    src="/digitata-logo.png"
+    width={90}
+    height={300}
+    alt="Digitáta logo"
+    className="rotate-90 invert"
+  />
+</div>
     </section>
   );
 }
