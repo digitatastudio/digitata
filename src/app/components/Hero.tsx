@@ -31,7 +31,7 @@ export default function Hero() {
 
      <div className="absolute bottom-6 right-6 z-20 opacity-80">
   <Image
-    src="/digitata-logo.png"
+    src="/digitata-logo-vertical.png"
     width={90}
     height={300}
     alt="Digitáta logo"
