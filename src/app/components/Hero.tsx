@@ -35,7 +35,7 @@ export default function Hero() {
     width={90}
     height={300}
     alt="Digitáta logo"
-    className="rotate-90 invert"
+    className="rotate-90"
   />
 </div>
     </section>
