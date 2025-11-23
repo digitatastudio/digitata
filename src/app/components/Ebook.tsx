@@ -13,6 +13,26 @@ export default function Ebook() {
       >
         Stáhnout e-book
       </a>
+      {/* Kniha: Táta na furt */}
+<div className="rounded-2xl bg-white shadow-xl p-6 flex flex-col justify-between border border-gray-200">
+  <div>
+    <h3 className="text-xl font-bold text-[#002D62] mb-3">
+      Táta na furt
+    </h3>
+    <p className="text-gray-700 mb-4 leading-relaxed">
+      Autentická kniha inspirovaná tvým vlastním příběhem. Praktický průvodce 
+      pro otce po rozchodu, kteří chtějí zvládnout emoce, udržet respekt a být 
+      tátou na plný úvazek – i když život zrovna nehraje fér.
+    </p>
+  </div>
+
+  <button
+    disabled
+    className="mt-4 w-full rounded-xl bg-gray-300 text-gray-600 py-3 font-semibold cursor-not-allowed"
+  >
+    Koupit (již brzy)
+  </button>
+</div>
     </section>
   )
 }
