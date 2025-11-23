@@ -1,38 +1,52 @@
-export default function Ebook() {
-  return (
-    <section className="text-center my-16">
-      <h2 className="text-2xl font-bold mb-4" style={{ color: "#002D62" }}>
-        E-book zdarma
-      </h2>
-      <p className="mb-6" style={{ color: "#002D62" }}>
-        <strong>EMOČNÍ RESTART</strong> – 7 dní návratu k sobě.
-      </p>
-      <a
-        href="/ebook/emocni-restart.pdf"
-        className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition"
-      >
-        Stáhnout e-book
-      </a>
-      {/* Kniha: Táta na furt */}
-<div className="rounded-2xl bg-white shadow-xl p-6 flex flex-col justify-between border border-gray-200">
-  <div>
-    <h3 className="text-xl font-bold text-[#002D62] mb-3">
-      Táta na furt
-    </h3>
-    <p className="text-gray-700 mb-4 leading-relaxed">
-      Autentická kniha inspirovaná tvým vlastním příběhem. Praktický průvodce 
-      pro otce po rozchodu, kteří chtějí zvládnout emoce, udržet respekt a být 
-      tátou na plný úvazek – i když život zrovna nehraje fér.
-    </p>
-  </div>
+<section id="ebooks" className="section">
+  <div className="wrap">
+    <h2 className="text-3xl md:text-4xl font-extrabold text-brand mb-10">
+      Moje knihy & e-booky
+    </h2>
 
-  <button
-    disabled
-    className="mt-4 w-full rounded-xl bg-gray-300 text-gray-600 py-3 font-semibold cursor-not-allowed"
-  >
-    Koupit (již brzy)
-  </button>
-</div>
-    </section>
-  )
-}
+    <div className="grid md:grid-cols-2 gap-12">
+
+      {/* 1) Emoční restart */}
+      <div className="flex flex-col md:flex-row items-center gap-6">
+        <img
+          src="/emocnirestart.jpg"
+          alt="Emoční restart"
+          className="w-64 rounded-xl shadow-lg"
+        />
+        <div>
+          <h3 className="text-xl font-bold mb-2">Emoční restart: 7 dní k sobě</h3>
+          <p className="text-gray-700 mb-4">
+            Krátký program pro rodiče po těžkých chvílích. Mini-úkoly na 7 dní.
+          </p>
+          <button
+            className="px-4 py-2 rounded-xl bg-gray-200 font-semibold cursor-not-allowed"
+          >
+            Stáhnout zdarma (brzy)
+          </button>
+        </div>
+      </div>
+
+      {/* 2) Táta na furt */}
+      <div className="flex flex-col md:flex-row items-center gap-6">
+        <img
+          src="/tatanafurt.jpg"
+          alt="Táta na furt"
+          className="w-64 rounded-xl shadow-lg"
+        />
+        <div>
+          <h3 className="text-xl font-bold mb-2">Táta na furt (kniha)</h3>
+          <p className="text-gray-700 mb-4">
+            Plnohodnotná kniha o tom, jak být dobrý táta i po rozchodu.
+            Autentická, praktická, lidská.
+          </p>
+          <button
+            className="px-4 py-2 rounded-xl bg-gray-200 font-semibold cursor-not-allowed"
+          >
+            Koupit (již brzy)
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
