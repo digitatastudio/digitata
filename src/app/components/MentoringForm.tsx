@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 
-type MentoringFormProps = {
-  onClose?: () => void; // parent (modal) může předat zavírací funkci
-};
-
-export default function MentoringForm({ onClose }: MentoringFormProps) {
+export default function MentoringForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
     "idle"
   );
@@ -60,29 +56,19 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
     <section id="mentoring" className="section">
       <div className="wrap">
         <div className="relative mx-auto max-w-2xl">
-          {/* Křížek – jen volá onClose z parenta, NIC neskrývá sám */}
-          {onClose && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="absolute right-0 -top-10 text-3xl font-bold text-gray-400 hover:text-gray-600"
-              aria-label="Zavřít formulář"
-            >
-              ×
-            </button>
-          )}
-
           <h2 className="text-3xl md:text-4xl font-extrabold text-brand mb-3 text-center">
             Přihláška na mentoring DIGITÁTA
           </h2>
 
           <p className="text-gray-700 mb-6 text-center">
             Tenhle formulář není test. Je to jen pár otázek, které mi pomůžou
-            pochopit, kde teď jsi ty a tvůj příběh.
+            pochopit, kde teď jsi ty a tvůj příběh. Odpovídej klidně, upřímně a
+            tak, jak to cítíš.
           </p>
 
           <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,.08)] max-h-[80vh] overflow-y-auto">
             <form onSubmit={onSubmit} className="space-y-6">
+              {/* Jméno */}
               <div>
                 <label htmlFor="name" className="block font-semibold mb-1">
                   Jméno / jak ti mám říkat
@@ -97,6 +83,7 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
                 />
               </div>
 
+              {/* E-mail */}
               <div>
                 <label htmlFor="email" className="block font-semibold mb-1">
                   E-mail
@@ -111,6 +98,7 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
                 />
               </div>
 
+              {/* Věk (volitelné) */}
               <div>
                 <label htmlFor="age" className="block font-semibold mb-1">
                   Věk{" "}
@@ -126,6 +114,7 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
                 />
               </div>
 
+              {/* Cíl / problém */}
               <div>
                 <label htmlFor="goal" className="block font-semibold mb-1">
                   Co teď nejvíc řešíš?
@@ -136,10 +125,11 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
                   required
                   rows={5}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-                  placeholder="Rodičovství, vztah, únava, směr…"
+                  placeholder="Krátce popiš situaci – rodičovství, vztah, únava, hledání směru… cokoliv, co teď nejvíc tlačí."
                 />
               </div>
 
+              {/* Formát mentoringu */}
               <div>
                 <label htmlFor="format" className="block font-semibold mb-1">
                   Jaký formát je ti příjemný?
@@ -157,6 +147,7 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
                 </select>
               </div>
 
+              {/* CTA */}
               <div className="pt-2">
                 <button
                   type="submit"
@@ -166,23 +157,27 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
                       ? "opacity-80 cursor-wait"
                       : "hover:bg-[#003B88]"
                   }`}
+                  aria-busy={status === "sending" ? "true" : "false"}
                 >
-                  {status === "sending" ? "Odesílám…" : "Chci začít s mentoringem"}
+                  {status === "sending"
+                    ? "Odesílám…"
+                    : "Chci začít s mentoringem"}
                 </button>
               </div>
 
+              {/* Stavy */}
               {status === "ok" && (
-                <p className="text-green-600 font-semibold mt-2">
+                <p className="text-green-600 font-semibold">
                   Díky! Ozvu se ti co nejdřív na e-mail.
                 </p>
               )}
               {status === "error" && (
-                <p className="text-red-600 mt-2">{errorMsg}</p>
+                <p className="text-red-600">{errorMsg}</p>
               )}
             </form>
 
             <p className="text-sm text-gray-500 mt-4 text-center">
-              Nechceš vyplňovat? Napiš na{" "}
+              Nechceš teď vyplňovat formulář? Napiš mi klidně přímo na{" "}
               <a
                 className="link-brand font-semibold"
                 href="mailto:info@digitatastudio.cz"
