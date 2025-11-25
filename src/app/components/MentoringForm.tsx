@@ -3,11 +3,9 @@
 import { useState } from "react";
 
 export default function MentoringForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
-    "idle"
-  );
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [isOpen, setIsOpen] = useState(true); // ← stav pro zavření formuláře
+  const [isOpen, setIsOpen] = useState(true); // ← přidáme stav
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -53,18 +51,18 @@ export default function MentoringForm() {
     }
   }
 
-  // když to uživatel zavře, sekce úplně zmizí
+  // KDYŽ JE ZAVŘENO → NIC NERENDERUJ
   if (!isOpen) return null;
 
   return (
     <section id="mentoring" className="section">
       <div className="wrap">
         <div className="relative mx-auto max-w-2xl">
-          {/* KŘÍŽEK NA ZAVŘENÍ */}
+          {/* Křížek nahoru vpravo */}
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="absolute right-0 top-0 -translate-y-6 text-2xl font-bold text-gray-400 hover:text-gray-600"
+            className="absolute right-0 -top-6 text-2xl font-bold text-gray-400 hover:text-gray-600"
             aria-label="Zavřít formulář"
           >
             ×
@@ -80,7 +78,7 @@ export default function MentoringForm() {
             a tak, jak to cítíš.
           </p>
 
-          {/* Scrollovatelný „card“ blok */}
+          {/* TADY JE TEN OBAL – je podmíněný přes isOpen nahoře */}
           <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,.08)] max-h-[80vh] overflow-y-auto">
             <form onSubmit={onSubmit} className="space-y-6">
               {/* Jméno */}
