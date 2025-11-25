@@ -3,8 +3,11 @@
 import { useState } from "react";
 
 export default function MentoringForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
+    "idle"
+  );
   const [errorMsg, setErrorMsg] = useState("");
+  const [isOpen, setIsOpen] = useState(true); // ← stav pro zavření formuláře
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -50,10 +53,23 @@ export default function MentoringForm() {
     }
   }
 
+  // když to uživatel zavře, sekce úplně zmizí
+  if (!isOpen) return null;
+
   return (
     <section id="mentoring" className="section">
       <div className="wrap">
-        <div className="mx-auto max-w-2xl">
+        <div className="relative mx-auto max-w-2xl">
+          {/* KŘÍŽEK NA ZAVŘENÍ */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="absolute right-0 top-0 -translate-y-6 text-2xl font-bold text-gray-400 hover:text-gray-600"
+            aria-label="Zavřít formulář"
+          >
+            ×
+          </button>
+
           <h2 className="text-3xl md:text-4xl font-extrabold text-brand mb-3 text-center">
             Přihláška na mentoring DIGITÁTA
           </h2>
