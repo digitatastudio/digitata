@@ -2,10 +2,15 @@
 
 import { useState } from "react";
 
-export default function MentoringForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+type MentoringFormProps = {
+  onClose?: () => void; // parent (modal) může předat zavírací funkci
+};
+
+export default function MentoringForm({ onClose }: MentoringFormProps) {
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
+    "idle"
+  );
   const [errorMsg, setErrorMsg] = useState("");
-  const [isOpen, setIsOpen] = useState(true); // OVLÁDÁME ZDE
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -51,23 +56,21 @@ export default function MentoringForm() {
     }
   }
 
-  // pokud zavřeno → nerenderuj nic
-  if (!isOpen) return null;
-
   return (
     <section id="mentoring" className="section">
       <div className="wrap">
         <div className="relative mx-auto max-w-2xl">
-
-          {/* KŘÍŽEK PRO ZAVŘENÍ */}
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className="absolute right-0 -top-10 text-3xl font-bold text-gray-400 hover:text-gray-600"
-            aria-label="Zavřít formulář"
-          >
-            ×
-          </button>
+          {/* Křížek – jen volá onClose z parenta, NIC neskrývá sám */}
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute right-0 -top-10 text-3xl font-bold text-gray-400 hover:text-gray-600"
+              aria-label="Zavřít formulář"
+            >
+              ×
+            </button>
+          )}
 
           <h2 className="text-3xl md:text-4xl font-extrabold text-brand mb-3 text-center">
             Přihláška na mentoring DIGITÁTA
@@ -80,7 +83,6 @@ export default function MentoringForm() {
 
           <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,.08)] max-h-[80vh] overflow-y-auto">
             <form onSubmit={onSubmit} className="space-y-6">
-              
               <div>
                 <label htmlFor="name" className="block font-semibold mb-1">
                   Jméno / jak ti mám říkat
@@ -91,6 +93,7 @@ export default function MentoringForm() {
                   type="text"
                   required
                   className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+                  placeholder="Míra, Honza, táta od Emičky…"
                 />
               </div>
 
@@ -104,12 +107,14 @@ export default function MentoringForm() {
                   type="email"
                   required
                   className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+                  placeholder="kam ti můžu napsat"
                 />
               </div>
 
               <div>
                 <label htmlFor="age" className="block font-semibold mb-1">
-                  Věk <span className="text-gray-400 text-sm">(volitelné)</span>
+                  Věk{" "}
+                  <span className="text-gray-400 text-sm">(volitelné)</span>
                 </label>
                 <input
                   id="age"
@@ -117,6 +122,7 @@ export default function MentoringForm() {
                   type="number"
                   min={10}
                   className="w-40 rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+                  placeholder="např. 27"
                 />
               </div>
 
@@ -130,6 +136,7 @@ export default function MentoringForm() {
                   required
                   rows={5}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+                  placeholder="Rodičovství, vztah, únava, směr…"
                 />
               </div>
 
@@ -176,9 +183,13 @@ export default function MentoringForm() {
 
             <p className="text-sm text-gray-500 mt-4 text-center">
               Nechceš vyplňovat? Napiš na{" "}
-              <a className="text-brand font-semibold" href="mailto:info@digitatastudio.cz">
+              <a
+                className="link-brand font-semibold"
+                href="mailto:info@digitatastudio.cz"
+              >
                 info@digitatastudio.cz
               </a>
+              .
             </p>
           </div>
         </div>
