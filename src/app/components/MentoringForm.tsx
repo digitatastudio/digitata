@@ -3,10 +3,9 @@
 import { useState } from "react";
 
 export default function MentoringForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
-    "idle"
-  );
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [isOpen, setIsOpen] = useState(true); // jen jedna věc: otevřeno / zavřeno
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -52,22 +51,37 @@ export default function MentoringForm() {
     }
   }
 
+  // ❗ KDYŽ UŽIVATEL ZAVŘE FORMULÁŘ => NIC SE NEZOBRAZUJE
+  if (!isOpen) return null;
+
   return (
     <section id="mentoring" className="section">
       <div className="wrap">
         <div className="relative mx-auto max-w-2xl">
+
+          {/* ✖ KŘÍŽEK NA ZAVŘENÍ */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="absolute right-0 -top-8 text-3xl text-gray-500 hover:text-gray-700"
+            aria-label="Zavřít formulář"
+          >
+            ×
+          </button>
+
           <h2 className="text-3xl md:text-4xl font-extrabold text-brand mb-3 text-center">
             Přihláška na mentoring DIGITÁTA
           </h2>
 
           <p className="text-gray-700 mb-6 text-center">
             Tenhle formulář není test. Je to jen pár otázek, které mi pomůžou
-            pochopit, kde teď jsi ty a tvůj příběh. Odpovídej klidně, upřímně a
-            tak, jak to cítíš.
+            pochopit, kde teď jsi ty a tvůj příběh.
           </p>
 
+          {/* FORM WRAPPER */}
           <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,.08)] max-h-[80vh] overflow-y-auto">
             <form onSubmit={onSubmit} className="space-y-6">
+
               {/* Jméno */}
               <div>
                 <label htmlFor="name" className="block font-semibold mb-1">
@@ -78,12 +92,12 @@ export default function MentoringForm() {
                   name="name"
                   type="text"
                   required
-                  className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+                  className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:ring-2 focus:ring-[var(--brand)]"
                   placeholder="Míra, Honza, táta od Emičky…"
                 />
               </div>
 
-              {/* E-mail */}
+              {/* Email */}
               <div>
                 <label htmlFor="email" className="block font-semibold mb-1">
                   E-mail
@@ -93,28 +107,27 @@ export default function MentoringForm() {
                   name="email"
                   type="email"
                   required
-                  className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+                  className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:ring-2 focus:ring-[var(--brand)]"
                   placeholder="kam ti můžu napsat"
                 />
               </div>
 
-              {/* Věk (volitelné) */}
+              {/* Age */}
               <div>
                 <label htmlFor="age" className="block font-semibold mb-1">
-                  Věk{" "}
-                  <span className="text-gray-400 text-sm">(volitelné)</span>
+                  Věk <span className="text-gray-400 text-sm">(volitelné)</span>
                 </label>
                 <input
                   id="age"
                   name="age"
                   type="number"
                   min={10}
-                  className="w-40 rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+                  className="w-40 rounded-lg border border-gray-300 px-4 h-12"
                   placeholder="např. 27"
                 />
               </div>
 
-              {/* Cíl / problém */}
+              {/* Goal */}
               <div>
                 <label htmlFor="goal" className="block font-semibold mb-1">
                   Co teď nejvíc řešíš?
@@ -124,12 +137,12 @@ export default function MentoringForm() {
                   name="goal"
                   required
                   rows={5}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-                  placeholder="Krátce popiš situaci – rodičovství, vztah, únava, hledání směru… cokoliv, co teď nejvíc tlačí."
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[var(--brand)]"
+                  placeholder="Krátce popiš situaci…"
                 />
               </div>
 
-              {/* Formát mentoringu */}
+              {/* Format */}
               <div>
                 <label htmlFor="format" className="block font-semibold mb-1">
                   Jaký formát je ti příjemný?
@@ -138,7 +151,7 @@ export default function MentoringForm() {
                   id="format"
                   name="format"
                   defaultValue="1:1 online"
-                  className="w-full rounded-lg border border-gray-300 px-4 h-12 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+                  className="w-full rounded-lg border border-gray-300 px-4 h-12 bg-white"
                 >
                   <option>1:1 online (video / call)</option>
                   <option>1:1 osobně</option>
@@ -157,18 +170,15 @@ export default function MentoringForm() {
                       ? "opacity-80 cursor-wait"
                       : "hover:bg-[#003B88]"
                   }`}
-                  aria-busy={status === "sending" ? "true" : "false"}
                 >
-                  {status === "sending"
-                    ? "Odesílám…"
-                    : "Chci začít s mentoringem"}
+                  {status === "sending" ? "Odesílám…" : "Chci začít s mentoringem"}
                 </button>
               </div>
 
-              {/* Stavy */}
+              {/* Status */}
               {status === "ok" && (
                 <p className="text-green-600 font-semibold">
-                  Díky! Ozvu se ti co nejdřív na e-mail.
+                  Díky! Ozvu se ti co nejdřív.
                 </p>
               )}
               {status === "error" && (
@@ -177,14 +187,10 @@ export default function MentoringForm() {
             </form>
 
             <p className="text-sm text-gray-500 mt-4 text-center">
-              Nechceš teď vyplňovat formulář? Napiš mi klidně přímo na{" "}
-              <a
-                className="link-brand font-semibold"
-                href="mailto:info@digitatastudio.cz"
-              >
+              Nechceš teď vyplňovat formulář? Napiš mi na{" "}
+              <a href="mailto:info@digitatastudio.cz" className="font-semibold">
                 info@digitatastudio.cz
-              </a>
-              .
+              </a>.
             </p>
           </div>
         </div>
