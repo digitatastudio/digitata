@@ -3,9 +3,10 @@
 import { useState } from "react";
 
 export default function MentoringForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
+    "idle"
+  );
   const [errorMsg, setErrorMsg] = useState("");
-  const [isOpen, setIsOpen] = useState(true); // ← přidaný přepínač
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -42,36 +43,27 @@ export default function MentoringForm() {
       setStatus("ok");
       form.reset();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Něco se pokazilo. Zkus to prosím znovu.";
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Něco se pokazilo. Zkus to prosím znovu.";
       setStatus("error");
       setErrorMsg(msg);
     }
   }
 
-  // když je zavřené → nerenderuj
-  if (!isOpen) return null;
-
   return (
     <section id="mentoring" className="section">
       <div className="wrap">
         <div className="relative mx-auto max-w-2xl">
-
-          {/* KŘÍŽEK */}
-          <button
-            onClick={() => setIsOpen(false)}
-            className="absolute right-0 -top-6 text-3xl font-bold text-gray-400 hover:text-gray-600"
-          >
-            ×
-          </button>
-
           <h2 className="text-3xl md:text-4xl font-extrabold text-brand mb-3 text-center">
             Přihláška na mentoring DIGITÁTA
           </h2>
 
           <p className="text-gray-700 mb-6 text-center">
             Tenhle formulář není test. Je to jen pár otázek, které mi pomůžou
-            pochopit, kde teď jsi ty a tvůj příběh. Odpovídej klidně, upřímně
-            a tak, jak to cítíš.
+            pochopit, kde teď jsi ty a tvůj příběh. Odpovídej klidně, upřímně a
+            tak, jak to cítíš.
           </p>
 
           <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,.08)] max-h-[80vh] overflow-y-auto">
@@ -106,10 +98,11 @@ export default function MentoringForm() {
                 />
               </div>
 
-              {/* Věk */}
+              {/* Věk (volitelné) */}
               <div>
                 <label htmlFor="age" className="block font-semibold mb-1">
-                  Věk <span className="text-gray-400 text-sm">(volitelné)</span>
+                  Věk{" "}
+                  <span className="text-gray-400 text-sm">(volitelné)</span>
                 </label>
                 <input
                   id="age"
@@ -121,7 +114,7 @@ export default function MentoringForm() {
                 />
               </div>
 
-              {/* Cíl */}
+              {/* Cíl / problém */}
               <div>
                 <label htmlFor="goal" className="block font-semibold mb-1">
                   Co teď nejvíc řešíš?
@@ -132,11 +125,11 @@ export default function MentoringForm() {
                   required
                   rows={5}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-                  placeholder="Krátce popiš situaci…"
+                  placeholder="Krátce popiš situaci – rodičovství, vztah, únava, hledání směru… cokoliv, co teď nejvíc tlačí."
                 />
               </div>
 
-              {/* Formát */}
+              {/* Formát mentoringu */}
               <div>
                 <label htmlFor="format" className="block font-semibold mb-1">
                   Jaký formát je ti příjemný?
@@ -150,7 +143,7 @@ export default function MentoringForm() {
                   <option>1:1 online (video / call)</option>
                   <option>1:1 osobně</option>
                   <option>Kombinace podle situace</option>
-                  <option>Je mi to jedno</option>
+                  <option>Je mi to jedno, poradíme se spolu</option>
                 </select>
               </div>
 
@@ -160,15 +153,23 @@ export default function MentoringForm() {
                   type="submit"
                   disabled={status === "sending"}
                   className={`inline-flex items-center justify-center rounded-2xl bg-[#002D62] text-white px-5 py-3 font-semibold ${
-                    status === "sending" ? "opacity-80 cursor-wait" : "hover:bg-[#003B88]"
+                    status === "sending"
+                      ? "opacity-80 cursor-wait"
+                      : "hover:bg-[#003B88]"
                   }`}
+                  aria-busy={status === "sending" ? "true" : "false"}
                 >
-                  {status === "sending" ? "Odesílám…" : "Chci začít s mentoringem"}
+                  {status === "sending"
+                    ? "Odesílám…"
+                    : "Chci začít s mentoringem"}
                 </button>
               </div>
 
+              {/* Stavy */}
               {status === "ok" && (
-                <p className="text-green-600 font-semibold">Díky! Ozvu se co nejdřív.</p>
+                <p className="text-green-600 font-semibold">
+                  Díky! Ozvu se ti co nejdřív na e-mail.
+                </p>
               )}
               {status === "error" && (
                 <p className="text-red-600">{errorMsg}</p>
@@ -176,8 +177,11 @@ export default function MentoringForm() {
             </form>
 
             <p className="text-sm text-gray-500 mt-4 text-center">
-              Nechceš teď vyplňovat formulář? Napiš mi na{" "}
-              <a className="font-semibold" href="mailto:info@digitatastudio.cz">
+              Nechceš teď vyplňovat formulář? Napiš mi klidně přímo na{" "}
+              <a
+                className="link-brand font-semibold"
+                href="mailto:info@digitatastudio.cz"
+              >
                 info@digitatastudio.cz
               </a>
               .
