@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-export default function MentoringForm() {
+type MentoringFormProps = {
+  onClose: () => void;
+};
+
+export default function MentoringForm({ onClose }: MentoringFormProps) {
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
     "idle"
   );
@@ -14,12 +18,13 @@ export default function MentoringForm() {
     setErrorMsg("");
 
     const form = e.currentTarget;
+
     const data = {
-      name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      age: (form.elements.namedItem("age") as HTMLInputElement).value,
-      goal: (form.elements.namedItem("goal") as HTMLTextAreaElement).value,
-      format: (form.elements.namedItem("format") as HTMLSelectElement).value,
+      name: (form.elements.namedItem("name") as HTMLInputElement)?.value,
+      email: (form.elements.namedItem("email") as HTMLInputElement)?.value,
+      age: (form.elements.namedItem("age") as HTMLInputElement)?.value,
+      format: (form.elements.namedItem("format") as HTMLSelectElement)?.value,
+      goal: (form.elements.namedItem("goal") as HTMLTextAreaElement)?.value,
     };
 
     try {
@@ -29,166 +34,120 @@ export default function MentoringForm() {
         body: JSON.stringify(data),
       });
 
-      if (!res.ok) {
-        let msg = "Server error";
-        try {
-          const j = await res.json();
-          msg = (j as { error?: string })?.error || msg;
-        } catch {
-          msg = await res.text();
-        }
-        throw new Error(msg);
+      const body = await res.json().catch(() => null);
+
+      if (!res.ok || !body?.ok) {
+        setStatus("error");
+        setErrorMsg(body?.error || "Něco se pokazilo při odesílání.");
+        return;
       }
 
       setStatus("ok");
       form.reset();
-    } catch (err: unknown) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : "Něco se pokazilo. Zkus to prosím znovu.";
+
+      // po úspěchu formulář automaticky zavřeme s malým delayem
+      setTimeout(() => {
+        onClose();
+      }, 1200);
+    } catch (err) {
+      console.error(err);
       setStatus("error");
-      setErrorMsg(msg);
+      setErrorMsg("Server spadl na hubu. Zkus to prosím za chvíli znovu.");
     }
   }
 
   return (
-    <section id="mentoring" className="section">
-      <div className="wrap">
-        <div className="relative mx-auto max-w-2xl">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-brand mb-3 text-center">
-            Přihláška na mentoring DIGITÁTA
-          </h2>
+    <form
+      onSubmit={onSubmit}
+      className="relative flex flex-col gap-4"
+    >
+      {/* KŘÍŽEK VPRAVO NAHOŘE */}
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute right-2 top-2 text-xl leading-none opacity-70 hover:opacity-100"
+        aria-label="Zavřít formulář"
+      >
+        ×
+      </button>
 
-          <p className="text-gray-700 mb-6 text-center">
-            Tenhle formulář není test. Je to jen pár otázek, které mi pomůžou
-            pochopit, kde teď jsi ty a tvůj příběh. Odpovídej klidně, upřímně a
-            tak, jak to cítíš.
-          </p>
+      <h2 className="text-xl font-semibold mb-2">Mentoring – první krok</h2>
 
-          <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,.08)] max-h-[80vh] overflow-y-auto">
-            <form onSubmit={onSubmit} className="space-y-6">
-              {/* Jméno */}
-              <div>
-                <label htmlFor="name" className="block font-semibold mb-1">
-                  Jméno / jak ti mám říkat
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-                  placeholder="Míra, Honza, táta od Emičky…"
-                />
-              </div>
+      <label className="flex flex-col gap-1 text-sm">
+        Jméno
+        <input
+          name="name"
+          required
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
+        />
+      </label>
 
-              {/* E-mail */}
-              <div>
-                <label htmlFor="email" className="block font-semibold mb-1">
-                  E-mail
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-                  placeholder="kam ti můžu napsat"
-                />
-              </div>
+      <label className="flex flex-col gap-1 text-sm">
+        E-mail
+        <input
+          type="email"
+          name="email"
+          required
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
+        />
+      </label>
 
-              {/* Věk (volitelné) */}
-              <div>
-                <label htmlFor="age" className="block font-semibold mb-1">
-                  Věk{" "}
-                  <span className="text-gray-400 text-sm">(volitelné)</span>
-                </label>
-                <input
-                  id="age"
-                  name="age"
-                  type="number"
-                  min={10}
-                  className="w-40 rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-                  placeholder="např. 27"
-                />
-              </div>
+      <label className="flex flex-col gap-1 text-sm">
+        Věk (nepovinné)
+        <input
+          type="number"
+          name="age"
+          min={10}
+          max={120}
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
+        />
+      </label>
 
-              {/* Cíl / problém */}
-              <div>
-                <label htmlFor="goal" className="block font-semibold mb-1">
-                  Co teď nejvíc řešíš?
-                </label>
-                <textarea
-                  id="goal"
-                  name="goal"
-                  required
-                  rows={5}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-                  placeholder="Krátce popiš situaci – rodičovství, vztah, únava, hledání směru… cokoliv, co teď nejvíc tlačí."
-                />
-              </div>
+      <label className="flex flex-col gap-1 text-sm">
+        Formát mentoringu
+        <select
+          name="format"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Vyber formu…
+          </option>
+          <option value="online">Online (call / video)</option>
+          <option value="chat">Chat / zprávy</option>
+          <option value="kombinace">Kombinace</option>
+        </select>
+      </label>
 
-              {/* Formát mentoringu */}
-              <div>
-                <label htmlFor="format" className="block font-semibold mb-1">
-                  Jaký formát je ti příjemný?
-                </label>
-                <select
-                  id="format"
-                  name="format"
-                  defaultValue="1:1 online"
-                  className="w-full rounded-lg border border-gray-300 px-4 h-12 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-                >
-                  <option>1:1 online (video / call)</option>
-                  <option>1:1 osobně</option>
-                  <option>Kombinace podle situace</option>
-                  <option>Je mi to jedno, poradíme se spolu</option>
-                </select>
-              </div>
+      <label className="flex flex-col gap-1 text-sm">
+        Popiš, kde jsi a kam chceš dojít
+        <textarea
+          name="goal"
+          required
+          rows={4}
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 resize-none"
+        />
+      </label>
 
-              {/* CTA */}
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={status === "sending"}
-                  className={`inline-flex items-center justify-center rounded-2xl bg-[#002D62] text-white px-5 py-3 font-semibold ${
-                    status === "sending"
-                      ? "opacity-80 cursor-wait"
-                      : "hover:bg-[#003B88]"
-                  }`}
-                  aria-busy={status === "sending" ? "true" : "false"}
-                >
-                  {status === "sending"
-                    ? "Odesílám…"
-                    : "Chci začít s mentoringem"}
-                </button>
-              </div>
+      {status === "error" && (
+        <p className="text-sm text-red-600">
+          {errorMsg}
+        </p>
+      )}
 
-              {/* Stavy */}
-              {status === "ok" && (
-                <p className="text-green-600 font-semibold">
-                  Díky! Ozvu se ti co nejdřív na e-mail.
-                </p>
-              )}
-              {status === "error" && (
-                <p className="text-red-600">{errorMsg}</p>
-              )}
-            </form>
+      {status === "ok" && (
+        <p className="text-sm text-emerald-600">
+          Díky, zpráva dorazila. Ozvu se.
+        </p>
+      )}
 
-            <p className="text-sm text-gray-500 mt-4 text-center">
-              Nechceš teď vyplňovat formulář? Napiš mi klidně přímo na{" "}
-              <a
-                className="link-brand font-semibold"
-                href="mailto:info@digitatastudio.cz"
-              >
-                info@digitatastudio.cz
-              </a>
-              .
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+      <button
+        type="submit"
+        disabled={status === "sending"}
+        className="mt-2 rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+      >
+        {status === "sending" ? "Odesílám…" : "Odeslat"}
+      </button>
+    </form>
   );
 }

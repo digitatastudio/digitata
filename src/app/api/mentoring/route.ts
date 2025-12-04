@@ -39,9 +39,11 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ ok: true });
-  } catch (e) {
+  }  catch (e: unknown) {
   console.error("!!! Mentoring API chyba:", e);
-  return NextResponse.json({ ok: false, error: e?.message || "Neznámá chyba" }, { status: 500 });
+  const message =
+    e instanceof Error ? e.message : "Neznámá chyba";
+  return NextResponse.json({ ok: false, error: message }, { status: 500 });
 }
 
 }
