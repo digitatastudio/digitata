@@ -7,6 +7,8 @@ import Services from "./components/Services";
 import Books from "./components/Books";
 import Contact from "./components/Contact";
 import MentoringModal from "./components/MentoringModal";
+import MentoringCTA from "./components/MentoringCTA";
+<MentoringCTA />
 
 export default function HomePage() {
   const [open, setOpen] = useState(false);
