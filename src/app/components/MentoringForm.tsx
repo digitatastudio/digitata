@@ -16,6 +16,7 @@ export default function MentoringForm({ onClose }: Props) {
     setErrorMsg("");
 
     const form = e.currentTarget;
+
     const data = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value.trim(),
       email: (form.elements.namedItem("email") as HTMLInputElement).value.trim(),
@@ -41,7 +42,9 @@ export default function MentoringForm({ onClose }: Props) {
 
       setStatus("ok");
       form.reset();
-      setTimeout(onClose, 900);
+
+      // malý delay a zavřít modal
+      setTimeout(() => onClose(), 900);
     } catch {
       setStatus("error");
       setErrorMsg("Síť/Server problém. Zkus to za chvíli.");
@@ -49,37 +52,42 @@ export default function MentoringForm({ onClose }: Props) {
   }
 
   return (
-    <div>
+    <div className="px-1">
       <h2 className="text-2xl md:text-3xl font-extrabold text-center mb-2">
         Přihláška na mentoring DIGITÁTA
       </h2>
-      <p className="text-gray-700 mb-5 text-center">
+
+      <p className="text-gray-700 mb-6 text-center text-sm md:text-base">
         Pár otázek, abych věděl, kde jsi. Upřímně a v klidu.
       </p>
 
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-5">
         <div>
-          <label className="block font-semibold mb-1" htmlFor="name">Jméno</label>
+          <label className="block font-semibold mb-1" htmlFor="name">
+            Jméno
+          </label>
           <input
             id="name"
             name="name"
             required
-            className="w-full rounded-lg border border-gray-300 px-4 h-11 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+            className="w-full rounded-lg border border-gray-300 px-4 h-11 md:h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
           />
         </div>
 
         <div>
-          <label className="block font-semibold mb-1" htmlFor="email">E-mail</label>
+          <label className="block font-semibold mb-1" htmlFor="email">
+            E-mail
+          </label>
           <input
             id="email"
             name="email"
             type="email"
             required
-            className="w-full rounded-lg border border-gray-300 px-4 h-11 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+            className="w-full rounded-lg border border-gray-300 px-4 h-11 md:h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
           />
         </div>
 
-        <div className="flex gap-3 flex-wrap">
+        <div className="flex gap-4 flex-wrap">
           <div>
             <label className="block font-semibold mb-1" htmlFor="age">
               Věk <span className="text-gray-400 text-sm">(volitelné)</span>
@@ -90,17 +98,19 @@ export default function MentoringForm({ onClose }: Props) {
               type="number"
               min={10}
               max={120}
-              className="w-32 rounded-lg border border-gray-300 px-4 h-11 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+              className="w-32 md:w-40 rounded-lg border border-gray-300 px-4 h-11 md:h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
             />
           </div>
 
           <div className="flex-1 min-w-[220px]">
-            <label className="block font-semibold mb-1" htmlFor="format">Formát</label>
+            <label className="block font-semibold mb-1" htmlFor="format">
+              Formát
+            </label>
             <select
               id="format"
               name="format"
               defaultValue="online"
-              className="w-full rounded-lg border border-gray-300 px-4 h-11 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+              className="w-full rounded-lg border border-gray-300 px-4 h-11 md:h-12 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
             >
               <option value="online">1:1 online (call/video)</option>
               <option value="chat">Chat / zprávy</option>
@@ -111,7 +121,9 @@ export default function MentoringForm({ onClose }: Props) {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1" htmlFor="goal">Co teď nejvíc řešíš?</label>
+          <label className="block font-semibold mb-1" htmlFor="goal">
+            Co teď nejvíc řešíš?
+          </label>
           <textarea
             id="goal"
             name="goal"
@@ -121,8 +133,8 @@ export default function MentoringForm({ onClose }: Props) {
           />
         </div>
 
-        {status === "error" && <p className="text-red-600">{errorMsg}</p>}
-        {status === "ok" && <p className="text-emerald-600 font-semibold">Díky. Ozvu se ti.</p>}
+        {status === "error" && <p className="text-red-600 text-sm">{errorMsg}</p>}
+        {status === "ok" && <p className="text-emerald-600 font-semibold text-sm">Díky. Ozvu se ti.</p>}
 
         <button
           type="submit"
