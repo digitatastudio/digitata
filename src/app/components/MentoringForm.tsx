@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 
-type MentoringFormProps = {
-  onClose?: () => void;
+type Props = {
+  onClose: () => void;
 };
 
-export default function MentoringForm({ onClose }: MentoringFormProps) {
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
-    "idle"
-  );
+export default function MentoringForm({ onClose }: Props) {
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -18,13 +16,12 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
     setErrorMsg("");
 
     const form = e.currentTarget;
-
     const data = {
-      name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      age: (form.elements.namedItem("age") as HTMLInputElement).value,
-      goal: (form.elements.namedItem("goal") as HTMLTextAreaElement).value,
+      name: (form.elements.namedItem("name") as HTMLInputElement).value.trim(),
+      email: (form.elements.namedItem("email") as HTMLInputElement).value.trim(),
+      age: (form.elements.namedItem("age") as HTMLInputElement).value.trim(),
       format: (form.elements.namedItem("format") as HTMLSelectElement).value,
+      goal: (form.elements.namedItem("goal") as HTMLTextAreaElement).value.trim(),
     };
 
     try {
@@ -38,48 +35,41 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
 
       if (!res.ok || !body?.ok) {
         setStatus("error");
-        setErrorMsg(body?.error || "Něco se pokazilo při odesílání.");
+        setErrorMsg(body?.error || `Odeslání selhalo (HTTP ${res.status}).`);
         return;
       }
 
       setStatus("ok");
       form.reset();
 
-      if (onClose) {
-        setTimeout(() => onClose(), 1200);
-      }
+      setTimeout(() => onClose(), 900);
     } catch {
       setStatus("error");
-      setErrorMsg("Server spadl na hubu. Zkus to prosím znovu.");
+      setErrorMsg("Síť/Server problém. Zkus to za chvíli.");
     }
   }
 
   return (
-    <div className="relative bg-white rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,.08)] max-h-[80vh] overflow-y-auto">
-      {onClose && (
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-3 top-3 text-2xl leading-none text-gray-400 hover:text-gray-700"
-          aria-label="Zavřít formulář"
-        >
-          ×
-        </button>
-      )}
+    <div className="relative bg-white rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,.08)] max-h-[85vh] overflow-y-auto">
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute right-3 top-3 text-2xl leading-none text-gray-400 hover:text-gray-700"
+        aria-label="Zavřít"
+      >
+        ×
+      </button>
 
       <h2 className="text-2xl md:text-3xl font-extrabold text-center mb-2">
         Přihláška na mentoring DIGITÁTA
       </h2>
-
       <p className="text-gray-700 mb-6 text-center">
-        Pár otázek, abych pochopil, kde teď jsi. Odpovídej v klidu a upřímně.
+        Pár otázek, abych věděl, kde jsi. Upřímně a v klidu.
       </p>
 
-      <form onSubmit={onSubmit} className="space-y-6">
+      <form onSubmit={onSubmit} className="space-y-5">
         <div>
-          <label htmlFor="name" className="block font-semibold mb-1">
-            Jméno
-          </label>
+          <label className="block font-semibold mb-1" htmlFor="name">Jméno</label>
           <input
             id="name"
             name="name"
@@ -89,9 +79,7 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
         </div>
 
         <div>
-          <label htmlFor="email" className="block font-semibold mb-1">
-            E-mail
-          </label>
+          <label className="block font-semibold mb-1" htmlFor="email">E-mail</label>
           <input
             id="email"
             name="email"
@@ -101,24 +89,39 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
           />
         </div>
 
-        <div>
-          <label htmlFor="age" className="block font-semibold mb-1">
-            Věk <span className="text-gray-400 text-sm">(volitelné)</span>
-          </label>
-          <input
-            id="age"
-            name="age"
-            type="number"
-            min={10}
-            max={120}
-            className="w-40 rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-          />
+        <div className="flex gap-4 flex-wrap">
+          <div>
+            <label className="block font-semibold mb-1" htmlFor="age">
+              Věk <span className="text-gray-400 text-sm">(volitelné)</span>
+            </label>
+            <input
+              id="age"
+              name="age"
+              type="number"
+              min={10}
+              max={120}
+              className="w-40 rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+            />
+          </div>
+
+          <div className="flex-1 min-w-[220px]">
+            <label className="block font-semibold mb-1" htmlFor="format">Formát</label>
+            <select
+              id="format"
+              name="format"
+              defaultValue="online"
+              className="w-full rounded-lg border border-gray-300 px-4 h-12 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+            >
+              <option value="online">1:1 online (call/video)</option>
+              <option value="chat">Chat / zprávy</option>
+              <option value="mix">Kombinace</option>
+              <option value="domluva">Domluvíme se</option>
+            </select>
+          </div>
         </div>
 
         <div>
-          <label htmlFor="goal" className="block font-semibold mb-1">
-            Co teď nejvíc řešíš?
-          </label>
+          <label className="block font-semibold mb-1" htmlFor="goal">Co teď nejvíc řešíš?</label>
           <textarea
             id="goal"
             name="goal"
@@ -128,48 +131,26 @@ export default function MentoringForm({ onClose }: MentoringFormProps) {
           />
         </div>
 
-        <div>
-          <label htmlFor="format" className="block font-semibold mb-1">
-            Formát
-          </label>
-          <select
-            id="format"
-            name="format"
-            defaultValue="online"
-            className="w-full rounded-lg border border-gray-300 px-4 h-12 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
-          >
-            <option value="online">1:1 online (video/call)</option>
-            <option value="osobne">1:1 osobně</option>
-            <option value="mix">Kombinace</option>
-            <option value="domluva">Domluvíme se</option>
-          </select>
-        </div>
+        {status === "error" && <p className="text-red-600">{errorMsg}</p>}
+        {status === "ok" && <p className="text-emerald-600 font-semibold">Díky. Ozvu se ti.</p>}
 
         <button
           type="submit"
           disabled={status === "sending"}
           className={`w-full rounded-2xl bg-[#002D62] text-white px-5 py-3 font-semibold ${
-            status === "sending" ? "opacity-80 cursor-wait" : "hover:bg-[#003B88]"
+            status === "sending" ? "opacity-70 cursor-wait" : "hover:bg-[#003B88]"
           }`}
         >
-          {status === "sending" ? "Odesílám…" : "Chci začít s mentoringem"}
+          {status === "sending" ? "Odesílám…" : "Odeslat"}
         </button>
 
-        {status === "ok" && (
-          <p className="text-green-600 font-semibold">
-            Díky! Ozvu se ti co nejdřív na e-mail.
-          </p>
-        )}
-        {status === "error" && <p className="text-red-600">{errorMsg}</p>}
+        <p className="text-sm text-gray-500 text-center">
+          Nebo rovnou mail:{" "}
+          <a className="font-semibold" href="mailto:info@digitatastudio.cz">
+            info@digitatastudio.cz
+          </a>
+        </p>
       </form>
-
-      <p className="text-sm text-gray-500 mt-4 text-center">
-        Nebo napiš rovnou na{" "}
-        <a className="font-semibold" href="mailto:info@digitatastudio.cz">
-          info@digitatastudio.cz
-        </a>
-        .
-      </p>
     </div>
   );
 }

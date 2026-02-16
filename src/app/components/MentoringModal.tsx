@@ -1,54 +1,50 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MentoringForm from "./MentoringForm";
 
-export default function MentoringModal() {
-  const [open, setOpen] = useState(false);
+type Props = {
+  open: boolean;
+  onClose: () => void;
+};
 
-  // ESC zavře modal
+export default function MentoringModal({ open, onClose }: Props) {
   useEffect(() => {
     if (!open) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
     };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
 
-  // zamknout scroll když je otevřeno
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
+    document.addEventListener("keydown", handleKey);
     document.body.style.overflow = "hidden";
+
     return () => {
-      document.body.style.overflow = prev;
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = "auto";
     };
-  }, [open]);
+  }, [open, onClose]);
+
+  if (!open) return null;
 
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-2xl bg-white rounded-2xl p-8"
+        onClick={(e) => e.stopPropagation()}
       >
-        Chci mentoring
-      </button>
-
-      {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-          onClick={() => setOpen(false)} // klik mimo zavře
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-xl"
         >
-          <div
-            className="w-full max-w-2xl"
-            onClick={(e) => e.stopPropagation()} // klik dovnitř nezavře
-          >
-            <MentoringForm onClose={() => setOpen(false)} />
-          </div>
-        </div>
-      )}
-    </>
+          ×
+        </button>
+
+        <MentoringForm onClose={onClose} />
+      </div>
+    </div>
   );
 }

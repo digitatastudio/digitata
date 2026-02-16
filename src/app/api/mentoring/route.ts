@@ -1,6 +1,6 @@
-// src/app/api/mentoring/route.ts
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
@@ -8,22 +8,32 @@ export async function POST(req: Request) {
     const { name, email, age, goal, format } = await req.json();
 
     if (!name || !email || !goal) {
-      return NextResponse.json({ ok: false, error: "Chybí jméno, e-mail nebo popis." }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, error: "Chybí jméno, e-mail nebo popis." },
+        { status: 400 }
+      );
     }
 
-  const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT || 587),
-  secure: Number(process.env.SMTP_PORT) === 465,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-    const to = process.env.TO_EMAIL || "info@digitatastudio.cz";
+    const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, TO_EMAIL } = process.env;
+
+    if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
+      return NextResponse.json(
+        { ok: false, error: "Chybí SMTP env proměnné na serveru (Vercel)." },
+        { status: 500 }
+      );
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: Number(SMTP_PORT),
+      secure: Number(SMTP_PORT) === 465,
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+    });
+
+    const to = TO_EMAIL || SMTP_USER;
 
     await transporter.sendMail({
-      from: `"DIGITÁTA web" <${process.env.SMTP_USER}>`,
+      from: `"DIGITÁTA web" <${SMTP_USER}>`,
       to,
       replyTo: email,
       subject: `Nová žádost o mentoring – ${name}`,
@@ -39,11 +49,11 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ ok: true });
-  }  catch (e: unknown) {
-  console.error("!!! Mentoring API chyba:", e);
-  const message =
-    e instanceof Error ? e.message : "Neznámá chyba";
-  return NextResponse.json({ ok: false, error: message }, { status: 500 });
-}
-
+  } catch (e: any) {
+    console.error("Mentoring API chyba:", e);
+    return NextResponse.json(
+      { ok: false, error: e?.message || "Neznámá chyba." },
+      { status: 500 }
+    );
+  }
 }
