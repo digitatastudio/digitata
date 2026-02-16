@@ -1,14 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import MentoringForm from "../components/MentoringForm";
+import { useEffect, useState } from "react";
+import MentoringForm from "./MentoringForm";
 
-export default function MentoringSection() {
+export default function MentoringModal() {
   const [open, setOpen] = useState(false);
+
+  // ESC zavře modal
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
+  // zamknout scroll když je otevřeno
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   return (
     <>
       <button
+        type="button"
         onClick={() => setOpen(true)}
         className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white"
       >
@@ -17,12 +38,12 @@ export default function MentoringSection() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
-          onClick={() => setOpen(false)} // klik mimo formulář zavře
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={() => setOpen(false)} // klik mimo zavře
         >
           <div
-            className="relative w-full max-w-lg rounded-2xl bg-white p-6"
-            onClick={(e) => e.stopPropagation()} // klik dovnitř NEzavírá
+            className="w-full max-w-2xl"
+            onClick={(e) => e.stopPropagation()} // klik dovnitř nezavře
           >
             <MentoringForm onClose={() => setOpen(false)} />
           </div>
