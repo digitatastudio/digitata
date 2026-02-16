@@ -18,7 +18,6 @@ export default function MentoringModal({ open, onClose }: Props) {
 
     document.addEventListener("keydown", onKeyDown);
 
-    // lock scroll stránky
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -32,25 +31,25 @@ export default function MentoringModal({ open, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 p-3 sm:p-4"
-      onPointerDown={onClose} // tap/klik mimo zavře (mobil friendly)
+      className="fixed inset-0 z-[999] bg-black/60"
       role="dialog"
       aria-modal="true"
       aria-label="Mentoring formulář"
     >
-      <div
-        className="relative w-full max-w-xl"
-        onPointerDown={(e) => e.stopPropagation()} // uvnitř nezavírat
-      >
-        {/* Panel */}
-        <div className="relative overflow-hidden rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,.30)]">
-          {/* Header */}
-          <div className="sticky top-0 z-20 flex items-center justify-between bg-white/95 px-4 py-3 backdrop-blur">
-            <div className="text-xs font-semibold text-slate-500">
-              {/* debug: smaž až to bude ok */}
-              MODAL ACTIVE
-            </div>
+      {/* BACKDROP: klik mimo zavře */}
+      <button
+        type="button"
+        aria-label="Zavřít modal"
+        onClick={onClose}
+        className="absolute inset-0 cursor-default"
+      />
 
+      {/* WRAP */}
+      <div className="relative z-10 flex min-h-full items-center justify-center p-3 sm:p-4">
+        {/* PANEL */}
+        <div className="relative w-full max-w-xl overflow-hidden rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,.30)]">
+          {/* HEADER */}
+          <div className="sticky top-0 z-20 flex items-center justify-end bg-white/95 px-4 py-3 backdrop-blur">
             <button
               type="button"
               onClick={onClose}
@@ -61,8 +60,12 @@ export default function MentoringModal({ open, onClose }: Props) {
             </button>
           </div>
 
-          {/* Obsah (scroll uvnitř) */}
-          <div className="max-h-[85vh] overflow-y-auto px-5 pb-6 sm:px-6">
+          {/* CONTENT (scroll inside) */}
+          <div
+            className="max-h-[85vh] overflow-y-auto px-5 pb-6 sm:px-6"
+            style={{ WebkitOverflowScrolling: "touch" }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <MentoringForm onClose={onClose} />
           </div>
         </div>
