@@ -18,12 +18,12 @@ export default function MentoringModal({ open, onClose }: Props) {
 
     document.addEventListener("keydown", onKeyDown);
 
-    const prevOverflow = document.body.style.overflow;
+    const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = prevOverflow;
+      document.body.style.overflow = prev;
     };
   }, [open, onClose]);
 
@@ -31,40 +31,33 @@ export default function MentoringModal({ open, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[999] bg-black/60"
+      className="fixed inset-0 z-[9999] bg-black/60 p-3 sm:p-4"
+      onClick={onClose} // klik na backdrop zavře
       role="dialog"
       aria-modal="true"
-      aria-label="Mentoring formulář"
     >
-      {/* BACKDROP: klik mimo zavře */}
-      <button
-        type="button"
-        aria-label="Zavřít modal"
-        onClick={onClose}
-        className="absolute inset-0 cursor-default"
-      />
+      <div
+        className="mx-auto flex min-h-full max-w-xl items-center justify-center"
+        // nic
+      >
+        <div
+          className="relative w-full rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,.30)]"
+          onClick={(e) => e.stopPropagation()} // klik do panelu nezavírá
+        >
+          {/* X */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-3 top-3 z-20 rounded-full bg-slate-100 px-3 py-1 text-2xl leading-none hover:bg-slate-200"
+            aria-label="Zavřít"
+          >
+            ×
+          </button>
 
-      {/* WRAP */}
-      <div className="relative z-10 flex min-h-full items-center justify-center p-3 sm:p-4">
-        {/* PANEL */}
-        <div className="relative w-full max-w-xl overflow-hidden rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,.30)]">
-          {/* HEADER */}
-          <div className="sticky top-0 z-20 flex items-center justify-end bg-white/95 px-4 py-3 backdrop-blur">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-full bg-slate-100 px-3 py-1 text-2xl leading-none text-slate-800 hover:bg-slate-200"
-              aria-label="Zavřít"
-            >
-              ×
-            </button>
-          </div>
-
-          {/* CONTENT (scroll inside) */}
+          {/* Scroll uvnitř */}
           <div
-            className="max-h-[85vh] overflow-y-auto px-5 pb-6 sm:px-6"
+            className="max-h-[85vh] overflow-y-auto p-5 sm:p-6"
             style={{ WebkitOverflowScrolling: "touch" }}
-            onClick={(e) => e.stopPropagation()}
           >
             <MentoringForm onClose={onClose} />
           </div>
