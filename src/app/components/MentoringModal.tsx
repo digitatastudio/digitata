@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import MentoringForm from "./MentoringForm";
 
 export default function MentoringModal() {
   const [open, setOpen] = useState(false);
 
-  const onClose = () => setOpen(false);
-  const onOpen = () => setOpen(true);
+  // Stabilní funkce pro otevírání a zavírání
+  const onClose = useCallback(() => setOpen(false), []);
+  const onOpen = useCallback(() => setOpen(true), []);
 
-  // ESC zavře + zamknout body scroll
+  // ESC klávesa a zamknutí scrollování pozadí
   useEffect(() => {
     if (!open) return;
 
@@ -18,7 +19,6 @@ export default function MentoringModal() {
     };
 
     document.addEventListener("keydown", handleKey);
-
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -26,53 +26,54 @@ export default function MentoringModal() {
       document.removeEventListener("keydown", handleKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [open]);
+  }, [open, onClose]);
 
   return (
     <>
-      {/* Trigger tlačítko */}
+      {/* Trigger tlačítko - opravené bez duplicitních tříd */}
       <div className="mt-10 flex justify-center">
         <button
           type="button"
           onClick={onOpen}
-          className="rounded-2xl bg-[#002D62] px-6 py-3 text-white font-semibold hover:bg-[#003B88]"
+          className="rounded-2xl bg-[#002D62] px-8 py-4 text-white font-bold transition-all hover:scale-105 active:scale-95 hover:bg-[#003B88] shadow-lg"
         >
           Chci začít s mentoringem
         </button>
       </div>
 
-      {/* Modal */}
+      {/* Modal Backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-3 sm:p-4"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-3 backdrop-blur-sm sm:p-4"
           role="dialog"
           aria-modal="true"
-          aria-label="Mentoring formulář"
           onClick={(e) => {
-            // zavře jen když klikneš na backdrop (mimo panel)
+            // Zavře modal při kliknutí mimo bílý panel
             if (e.target === e.currentTarget) onClose();
           }}
         >
           <div className="relative w-full max-w-xl">
-            {/* Panel */}
+            {/* Bílý panel modalu */}
             <div className="relative overflow-hidden rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,.35)]">
-              {/* Header s X */}
-              <div className="flex items-center justify-end border-b border-slate-100 px-3 py-2">
+              
+              {/* Header s křížkem */}
+              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Mentoring</span>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-full bg-slate-100 px-3 py-1 text-2xl leading-none hover:bg-slate-200"
+                  className="group flex h-9 w-9 items-center justify-center rounded-full bg-slate-50 transition-colors hover:bg-red-50"
                   aria-label="Zavřít"
                 >
-                  ×
+                  <span className="text-2xl leading-none text-slate-400 group-hover:text-red-500">×</span>
                 </button>
               </div>
 
-              {/* Scroll uvnitř (mobile safe) */}
+              {/* Scroll vnitřek formuláře */}
               <div
-                className="overflow-y-auto overscroll-contain px-5 pb-6 pt-4 sm:px-6"
+                className="overflow-y-auto overscroll-contain px-5 pb-8 pt-6 sm:px-10"
                 style={{
-                  maxHeight: "min(85dvh, 720px)",
+                  maxHeight: "min(85dvh, 750px)",
                   WebkitOverflowScrolling: "touch",
                 }}
               >

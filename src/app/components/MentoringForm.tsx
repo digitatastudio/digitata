@@ -16,13 +16,14 @@ export default function MentoringForm({ onClose }: Props) {
     setErrorMsg("");
 
     const form = e.currentTarget;
-
+    const formData = new FormData(form);
+    
     const data = {
-      name: (form.elements.namedItem("name") as HTMLInputElement).value.trim(),
-      email: (form.elements.namedItem("email") as HTMLInputElement).value.trim(),
-      age: (form.elements.namedItem("age") as HTMLInputElement).value.trim(),
-      format: (form.elements.namedItem("format") as HTMLSelectElement).value,
-      goal: (form.elements.namedItem("goal") as HTMLTextAreaElement).value.trim(),
+      name: formData.get("name")?.toString().trim(),
+      email: formData.get("email")?.toString().trim(),
+      age: formData.get("age")?.toString().trim(),
+      format: formData.get("format")?.toString(),
+      goal: formData.get("goal")?.toString().trim(),
     };
 
     try {
@@ -43,39 +44,51 @@ export default function MentoringForm({ onClose }: Props) {
       setStatus("ok");
       form.reset();
 
-      // malý delay a zavřít modal
-      setTimeout(() => onClose(), 900);
+      // Po úspěchu zavřít modal po krátké prodlevě
+      setTimeout(() => onClose(), 1500);
     } catch {
       setStatus("error");
-      setErrorMsg("Síť/Server problém. Zkus to za chvíli.");
+      setErrorMsg("Problém se spojením. Zkontroluj internet a zkus to znovu.");
     }
+  }
+
+  if (status === "ok") {
+    return (
+      <div className="py-10 text-center animate-in fade-in zoom-in-95">
+        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-3xl">
+          ✓
+        </div>
+        <h3 className="text-2xl font-bold text-slate-900">Odesláno!</h3>
+        <p className="mt-2 text-slate-600">Díky za důvěru, brzy se ti ozvu.</p>
+      </div>
+    );
   }
 
   return (
     <div className="px-1">
-      <h2 className="text-2xl md:text-3xl font-extrabold text-center mb-2">
-        Přihláška na mentoring DIGITÁTA
+      <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">
+        Pojďme na to
       </h2>
-
-      <p className="text-gray-700 mb-6 text-center text-sm md:text-base">
-        Pár otázek, abych věděl, kde jsi. Upřímně a v klidu.
+      <p className="text-slate-500 mb-8 text-sm md:text-base">
+        Napiš mi, co tě trápí nebo kam se chceš posunout.
       </p>
 
       <form onSubmit={onSubmit} className="space-y-5">
         <div>
-          <label className="block font-semibold mb-1" htmlFor="name">
+          <label className="block text-sm font-bold text-slate-700 mb-1" htmlFor="name">
             Jméno
           </label>
           <input
             id="name"
             name="name"
             required
-            className="w-full rounded-lg border border-gray-300 px-4 h-11 md:h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+            placeholder="Tvoje jméno"
+            className="w-full rounded-xl border border-slate-200 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all"
           />
         </div>
 
         <div>
-          <label className="block font-semibold mb-1" htmlFor="email">
+          <label className="block text-sm font-bold text-slate-700 mb-1" htmlFor="email">
             E-mail
           </label>
           <input
@@ -83,14 +96,15 @@ export default function MentoringForm({ onClose }: Props) {
             name="email"
             type="email"
             required
-            className="w-full rounded-lg border border-gray-300 px-4 h-11 md:h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+            placeholder="tvuj@email.cz"
+            className="w-full rounded-xl border border-slate-200 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all"
           />
         </div>
 
-        <div className="flex gap-4 flex-wrap">
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block font-semibold mb-1" htmlFor="age">
-              Věk <span className="text-gray-400 text-sm">(volitelné)</span>
+            <label className="block text-sm font-bold text-slate-700 mb-1" htmlFor="age">
+              Věk <span className="font-normal text-slate-400">(volitelné)</span>
             </label>
             <input
               id="age"
@@ -98,30 +112,29 @@ export default function MentoringForm({ onClose }: Props) {
               type="number"
               min={10}
               max={120}
-              className="w-32 md:w-40 rounded-lg border border-gray-300 px-4 h-11 md:h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+              className="w-full rounded-xl border border-slate-200 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all"
             />
           </div>
 
-          <div className="flex-1 min-w-[220px]">
-            <label className="block font-semibold mb-1" htmlFor="format">
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-1" htmlFor="format">
               Formát
             </label>
             <select
               id="format"
               name="format"
               defaultValue="online"
-              className="w-full rounded-lg border border-gray-300 px-4 h-11 md:h-12 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+              className="w-full rounded-xl border border-slate-200 px-4 h-12 bg-white focus:outline-none focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all"
             >
-              <option value="online">1:1 online (call/video)</option>
+              <option value="online">1:1 online</option>
               <option value="chat">Chat / zprávy</option>
-              <option value="mix">Kombinace</option>
-              <option value="domluva">Domluvíme se</option>
+              <option value="domluva">Uvidíme</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label className="block font-semibold mb-1" htmlFor="goal">
+          <label className="block text-sm font-bold text-slate-700 mb-1" htmlFor="goal">
             Co teď nejvíc řešíš?
           </label>
           <textarea
@@ -129,29 +142,26 @@ export default function MentoringForm({ onClose }: Props) {
             name="goal"
             required
             rows={4}
-            className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+            placeholder="Popiš mi stručně svoji situaci..."
+            className="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all"
           />
         </div>
 
-        {status === "error" && <p className="text-red-600 text-sm">{errorMsg}</p>}
-        {status === "ok" && <p className="text-emerald-600 font-semibold text-sm">Díky. Ozvu se ti.</p>}
+        {status === "error" && (
+          <div className="p-3 rounded-lg bg-red-50 text-red-600 text-sm border border-red-100">
+            {errorMsg}
+          </div>
+        )}
 
         <button
           type="submit"
           disabled={status === "sending"}
-          className={`w-full rounded-2xl bg-[#002D62] text-white px-5 py-3 font-semibold ${
-            status === "sending" ? "opacity-70 cursor-wait" : "hover:bg-[#003B88]"
+          className={`w-full rounded-xl bg-[#002D62] text-white px-5 py-4 font-bold shadow-md transition-all ${
+            status === "sending" ? "opacity-70 cursor-wait" : "hover:bg-[#003B88] hover:shadow-lg active:translate-y-0.5"
           }`}
         >
-          {status === "sending" ? "Odesílám…" : "Odeslat"}
+          {status === "sending" ? "Odesílám..." : "Odeslat přihlášku"}
         </button>
-
-        <p className="text-sm text-gray-500 text-center">
-          Nebo rovnou mail:{" "}
-          <a className="font-semibold" href="mailto:info@digitatastudio.cz">
-            info@digitatastudio.cz
-          </a>
-        </p>
       </form>
     </div>
   );
