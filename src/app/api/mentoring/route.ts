@@ -6,24 +6,37 @@ export const runtime = "nodejs";
 type MentoringPayload = {
   name: string;
   email: string;
-  age?: string | number;
   goal: string;
-  format?: string;
+  age?: string | number | null;
+  format?: string | null;
 };
 
-function isMentoringPayload(x: unknown): x is MentoringPayload {
-  if (!x || typeof x !== "object") return false;
-  const o = x as Record<string, unknown>;
+function isMentoringPayload(v: unknown): v is MentoringPayload {
+  if (!v || typeof v !== "object") return false;
+  const o = v as Record<string, unknown>;
 
-  return (
-    typeof o.name === "string" &&
-    typeof o.email === "string" &&
-    typeof o.goal === "string" &&
-    (o.age === undefined ||
-      typeof o.age === "string" ||
-      typeof o.age === "number") &&
-    (o.format === undefined || typeof o.format === "string")
-  );
+  const okName = typeof o.name === "string";
+  const okEmail = typeof o.email === "string";
+  const okGoal = typeof o.goal === "string";
+
+  const okAge =
+    o.age === undefined ||
+    o.age === null ||
+    typeof o.age === "string" ||
+    typeof o.age === "number";
+
+  const okFormat = o.format === undefined || o.format === null || typeof o.format === "string";
+
+  return okName && okEmail && okGoal && okAge && okFormat;
+}
+
+function escapeHtml(s: string) {
+  return s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 export async function POST(req: Request) {
@@ -31,15 +44,13 @@ export async function POST(req: Request) {
     const raw: unknown = await req.json();
 
     if (!isMentoringPayload(raw)) {
-      return NextResponse.json(
-        { ok: false, error: "Neplatná data ve formuláři." },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: "Neplatná data ve formuláři." }, { status: 400 });
     }
 
     const name = raw.name.trim();
     const email = raw.email.trim();
     const goal = raw.goal.trim();
+
     const format = (raw.format ?? "domluva").toString().trim();
     const age =
       raw.age === undefined || raw.age === null || raw.age === ""
@@ -47,19 +58,13 @@ export async function POST(req: Request) {
         : String(raw.age).trim();
 
     if (!name || !email || !goal) {
-      return NextResponse.json(
-        { ok: false, error: "Chybí povinné údaje." },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: "Chybí povinné údaje." }, { status: 400 });
     }
 
     const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, TO_EMAIL } = process.env;
 
     if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
-      return NextResponse.json(
-        { ok: false, error: "Chyba konfigurace serveru." },
-        { status: 500 }
-      );
+      return NextResponse.json({ ok: false, error: "Chyba konfigurace serveru." }, { status: 500 });
     }
 
     const transporter = nodemailer.createTransport({
@@ -93,14 +98,4 @@ export async function POST(req: Request) {
     console.error("Mentoring API Error:", message);
     return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
-}
-
-// malá ochrana proti rozbití HTML (a “veselým” vstupům)
-function escapeHtml(input: string) {
-  return input
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
 }

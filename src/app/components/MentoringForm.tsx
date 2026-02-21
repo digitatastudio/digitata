@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 
-type Props = {
-  onClose: () => void;
-};
+type Props = { onClose: () => void };
 
 export default function MentoringForm({ onClose }: Props) {
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
@@ -16,14 +14,13 @@ export default function MentoringForm({ onClose }: Props) {
     setErrorMsg("");
 
     const form = e.currentTarget;
-    const formData = new FormData(form);
-    
+
     const data = {
-      name: formData.get("name")?.toString().trim(),
-      email: formData.get("email")?.toString().trim(),
-      age: formData.get("age")?.toString().trim(),
-      format: formData.get("format")?.toString(),
-      goal: formData.get("goal")?.toString().trim(),
+      name: (form.elements.namedItem("name") as HTMLInputElement).value.trim(),
+      email: (form.elements.namedItem("email") as HTMLInputElement).value.trim(),
+      age: (form.elements.namedItem("age") as HTMLInputElement).value.trim(),
+      format: (form.elements.namedItem("format") as HTMLSelectElement).value,
+      goal: (form.elements.namedItem("goal") as HTMLTextAreaElement).value.trim(),
     };
 
     try {
@@ -33,112 +30,119 @@ export default function MentoringForm({ onClose }: Props) {
         body: JSON.stringify(data),
       });
 
-      const body = await res.json().catch(() => null);
+      const body = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
 
       if (!res.ok || !body?.ok) {
         setStatus("error");
-        setErrorMsg(body?.error || `Odeslání selhalo.`);
+        setErrorMsg(body?.error || `Odeslání selhalo (HTTP ${res.status}).`);
         return;
       }
 
       setStatus("ok");
-      setTimeout(() => onClose(), 1500);
+      form.reset();
+      setTimeout(onClose, 900);
     } catch {
       setStatus("error");
-      setErrorMsg("Chyba spojení.");
+      setErrorMsg("Síť/Server problém. Zkus to za chvíli.");
     }
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-2xl">
-      {/* Designový prvek: Horní barevný gradient bar */}
-      <div className="h-2 w-full bg-gradient-to-r from-[#002D62] via-[#003B88] to-[#002D62]" />
-      
-      <div className="p-6 md:p-8">
-        <div className="mb-6">
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">
-            Digitáta Mentoring
-          </h2>
-          <p className="text-slate-500 text-sm mt-1">
-            Udělej první krok ke svému digitálnímu posunu.
-          </p>
+    <div className="bg-white">
+      <h2 className="text-2xl md:text-3xl font-extrabold text-center mb-2">
+        Přihláška na mentoring DIGITÁTA
+      </h2>
+      <p className="text-gray-700 mb-6 text-center">
+        Pár otázek, abych věděl, kde jsi. Upřímně a v klidu.
+      </p>
+
+      <form onSubmit={onSubmit} className="space-y-5">
+        <div>
+          <label className="block font-semibold mb-1" htmlFor="name">Jméno</label>
+          <input
+            id="name"
+            name="name"
+            required
+            autoComplete="name"
+            className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+          />
         </div>
-        
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div className="space-y-4">
-            <input 
-              name="name" 
-              placeholder="Jméno a příjmení" 
-              required 
-              className="w-full rounded-xl border border-slate-200 p-3.5 focus:border-[#002D62] focus:ring-2 focus:ring-[#002D62]/10 outline-none transition-all" 
-            />
-            <input 
-              name="email" 
-              type="email" 
-              placeholder="E-mailová adresa" 
-              required 
-              className="w-full rounded-xl border border-slate-200 p-3.5 focus:border-[#002D62] focus:ring-2 focus:ring-[#002D62]/10 outline-none transition-all" 
-            />
-            
-            <div className="grid grid-cols-2 gap-3">
-              <input 
-                name="age" 
-                type="number" 
-                placeholder="Věk (volitelné)" 
-                className="w-full rounded-xl border border-slate-200 p-3.5 focus:border-[#002D62] focus:ring-2 focus:ring-[#002D62]/10 outline-none transition-all" 
-              />
-              <select 
-                name="format" 
-                className="w-full rounded-xl border border-slate-200 p-3.5 bg-white focus:border-[#002D62] focus:ring-2 focus:ring-[#002D62]/10 outline-none transition-all"
-              >
-                <option value="online">1:1 Online</option>
-                <option value="chat">Chat / Zprávy</option>
-                <option value="osobne">Osobně</option>
-              </select>
-            </div>
 
-            <div className="rounded-xl bg-slate-50 border border-slate-100 p-1">
-              <textarea 
-                name="goal" 
-                placeholder="Co tě teď nejvíc trápí nebo co bys chtěl změnit?" 
-                required 
-                rows={4} 
-                className="w-full bg-transparent p-3 outline-none resize-none text-slate-700 placeholder:text-slate-400" 
-              />
-            </div>
+        <div>
+          <label className="block font-semibold mb-1" htmlFor="email">E-mail</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            className="w-full rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+          />
+        </div>
+
+        <div className="flex gap-4 flex-wrap">
+          <div>
+            <label className="block font-semibold mb-1" htmlFor="age">
+              Věk <span className="text-gray-400 text-sm">(volitelné)</span>
+            </label>
+            <input
+              id="age"
+              name="age"
+              type="number"
+              min={10}
+              max={120}
+              inputMode="numeric"
+              className="w-40 rounded-lg border border-gray-300 px-4 h-12 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+            />
           </div>
 
-          {status === "error" && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">
-              {errorMsg}
-            </div>
-          )}
-          
-          {status === "ok" && (
-            <div className="bg-emerald-50 text-emerald-600 p-3 rounded-lg text-sm font-bold border border-emerald-100 text-center animate-pulse">
-              ✓ Úspěšně odesláno! Ozvu se ti.
-            </div>
-          )}
-
-          <div className="flex flex-col gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={status === "sending"}
-              className="w-full rounded-xl bg-[#002D62] text-white py-4 font-bold shadow-lg shadow-[#002D62]/20 hover:bg-[#003B88] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:translate-y-0"
+          <div className="flex-1 min-w-[220px]">
+            <label className="block font-semibold mb-1" htmlFor="format">Formát</label>
+            <select
+              id="format"
+              name="format"
+              defaultValue="online"
+              className="w-full rounded-lg border border-gray-300 px-4 h-12 bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
             >
-              {status === "sending" ? "Odesílám tvou žádost..." : "Odeslat přihlášku"}
-            </button>
-            
-            <button
-              type="button"
-              onClick={onClose}
-              className="w-full py-2 text-slate-400 text-xs font-bold uppercase tracking-widest hover:text-red-500 transition-colors"
-            >
-              Zrušit a zavřít
-            </button>
+              <option value="online">1:1 online (call/video)</option>
+              <option value="chat">Chat / zprávy</option>
+              <option value="mix">Kombinace</option>
+              <option value="domluva">Domluvíme se</option>
+            </select>
           </div>
-        </form>
-      </div>
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1" htmlFor="goal">Co teď nejvíc řešíš?</label>
+          <textarea
+            id="goal"
+            name="goal"
+            required
+            rows={5}
+            className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+          />
+        </div>
+
+        {status === "error" && <p className="text-red-600">{errorMsg}</p>}
+        {status === "ok" && <p className="text-emerald-600 font-semibold">Díky. Ozvu se ti.</p>}
+
+        <button
+          type="submit"
+          disabled={status === "sending"}
+          className={`w-full rounded-2xl bg-[#002D62] text-white px-5 py-3 font-semibold ${
+            status === "sending" ? "opacity-70 cursor-wait" : "hover:bg-[#003B88]"
+          }`}
+        >
+          {status === "sending" ? "Odesílám…" : "Odeslat"}
+        </button>
+
+        <p className="text-sm text-gray-500 text-center">
+          Nebo rovnou mail:{" "}
+          <a className="font-semibold" href="mailto:info@digitatastudio.cz">
+            info@digitatastudio.cz
+          </a>
+        </p>
+      </form>
     </div>
   );
 }
