@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react"; // 1. Musíme importovat useState
+import { useState } from "react";
 import MentoringModal from "./components/MentoringModal";
-import MentoringForm from "./components/MentoringForm"; // 2. Potřebujeme i ten formulář dovnitř
+import MentoringForm from "./components/MentoringForm";
 
 export default function HomePage() {
-  // 3. Vytvoříme si stav pro otevření modálu
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -19,7 +18,6 @@ export default function HomePage() {
         </p>
         
         <div className="flex flex-col items-center gap-4">
-          {/* 4. Tlačítko, které modál skutečně otevře */}
           <button 
             onClick={() => setIsModalOpen(true)}
             className="rounded-2xl bg-[#002D62] text-white px-8 py-4 font-bold hover:bg-[#003B88] transition-all"
@@ -27,13 +25,20 @@ export default function HomePage() {
             Chci mentoring
           </button>
 
-          {/* 5. Opravené volání modálu se všemi povinnými props */}
+          {/* TADY JE OPRAVA: Modál voláme jako samostatný tag, protože neumí přijmout children */}
           <MentoringModal 
             open={isModalOpen} 
-            onClose={() => setIsModalOpen(false)}
-          >
-            <MentoringForm onClose={() => setIsModalOpen(false)} />
-          </MentoringModal>
+            onClose={() => setIsModalOpen(false)} 
+          />
+
+          {/* Pokud chceš, aby se po kliknutí ukázal formulář, můžeš ho dát takto pod to: */}
+          {isModalOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
+              <div className="bg-white p-6 rounded-2xl max-w-md w-full">
+                <MentoringForm onClose={() => setIsModalOpen(false)} />
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </main>
