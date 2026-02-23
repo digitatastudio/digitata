@@ -121,9 +121,10 @@ export default function Services() {
         </div>
       </div>
 
-      <MentoringModal open={mentorOpen} onClose={() => setMentorOpen(false)}>
-        <MentoringForm />
-      </MentoringModal>
+<MentoringModal open={mentorOpen} onClose={() => setMentorOpen(false)}>
+  {/* Tady byla chyba: Chyběla prop onClose */}
+  <MentoringForm onClose={() => setMentorOpen(false)} /> 
+</MentoringModal>
     </section>
   );
 }
