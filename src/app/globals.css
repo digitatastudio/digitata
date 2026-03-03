@@ -24,3 +24,14 @@ body {
   position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
 }
 .flip-card-back { transform: rotateY(180deg); }
+.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+  position: fixed !important;
+  width: 100% !important;
+}
+
+.custom-form-scroll {
+  -webkit-overflow-scrolling: touch; /* Důležité pro hladký scroll na iPhonu */
+  touch-action: pan-y;
+}
