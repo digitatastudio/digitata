@@ -63,10 +63,17 @@ export async function POST(req: Request) {
 
     const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, TO_EMAIL } = process.env;
 
+    // TÍMTO ZJISTÍME, KTERÁ PROMĚNNÁ CHYBÍ (vypíše true/false do Vercel logů)
+    console.log("Stav proměnných:", { 
+      host: !!SMTP_HOST, 
+      port: !!SMTP_PORT, 
+      user: !!SMTP_USER, 
+      pass: !!SMTP_PASS 
+    });
+
     if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
       return NextResponse.json({ ok: false, error: "Chyba konfigurace serveru." }, { status: 500 });
     }
-
     const transporter = nodemailer.createTransport({
       host: SMTP_HOST,
       port: Number(SMTP_PORT),
