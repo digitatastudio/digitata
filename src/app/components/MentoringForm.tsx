@@ -14,7 +14,7 @@ export default function MentoringForm({ onClose }: Props) {
     setErrorMsg("");
 
     const form = e.currentTarget;
-    const formData = new FormData(form); // Modernější a spolehlivější způsob
+    const formData = new FormData(form);
 
     const data = {
       name: formData.get("name")?.toString().trim(),
@@ -25,7 +25,6 @@ export default function MentoringForm({ onClose }: Props) {
     };
 
     try {
-      // DŮLEŽITÉ: Kontrola, zda URL odpovídá tvé route.ts
       const res = await fetch("/api/mentoring", {
         method: "POST",
         headers: { 
@@ -51,11 +50,12 @@ export default function MentoringForm({ onClose }: Props) {
   }
 
   return (
-    /* DŮLEŽITÉ PRO SCROLLOVÁNÍ: 
-       Přidáváme 'touch-pan-y' pro Safari a 'relative' s vysokým z-indexem.
-       Zároveň odstraňujeme bg-white, protože ten už je v page.tsx.
+    /* TADY JSOU TY 3 KLÍČOVÉ TŘÍDY PRO SCROLL: 
+       max-h-[80vh] -> omezí výšku
+       overflow-y-auto -> zapne posuvník
+       overscroll-contain -> zabrání předání scrollu na pozadí 
     */
-    <div className="w-full touch-pan-y relative z-[10001] pb-10">
+    <div className="w-full max-h-[80vh] overflow-y-auto overscroll-contain touch-pan-y relative z-[10001] pb-10 px-2 sm:px-4 custom-scrollbar">
       <h2 className="text-2xl md:text-3xl font-extrabold text-center mb-2 text-[#002D62]">
         Přihláška na mentoring
       </h2>
@@ -143,7 +143,7 @@ export default function MentoringForm({ onClose }: Props) {
           {status === "sending" ? "Odesílám..." : "Odeslat přihlášku"}
         </button>
 
-        <p className="text-xs text-gray-400 text-center uppercase tracking-wider">
+        <p className="text-xs text-gray-400 text-center uppercase tracking-wider mt-4">
           nebo rovnou na: info@digitatastudio.cz
         </p>
       </form>
