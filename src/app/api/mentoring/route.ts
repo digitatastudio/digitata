@@ -72,6 +72,10 @@ export async function POST(req: Request) {
       port: Number(SMTP_PORT),
       secure: Number(SMTP_PORT) === 465,
       auth: { user: SMTP_USER, pass: SMTP_PASS },
+      // TADY JE TA OPRAVA PRO HOSTING:
+      tls: {
+        rejectUnauthorized: false
+      }
     });
 
     await transporter.sendMail({
