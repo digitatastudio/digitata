@@ -40,20 +40,28 @@ export default function HomePage() {
       />
 
       {isModalOpen && (
-        /* Obal modálu: items-start + overflow-y-auto umožní scrollovat dlouhý formulář */
-        <div className="fixed inset-0 z-[100] flex items-start md:items-center justify-center bg-black/60 p-0 md:p-4 overflow-y-auto">
-          
-          <div className="bg-white p-6 pt-14 rounded-t-3xl md:rounded-2xl max-w-md w-full relative shadow-2xl mt-10 md:mt-0 mb-10">
-            <button 
-              onClick={closeModal} 
-              className="absolute top-4 right-4 text-gray-400 hover:text-black text-3xl p-2 z-10"
-            >
-              ✕
-            </button>
-            <MentoringForm onClose={closeModal} />
-          </div>
-        </div>
-      )}
+  /* Ztmavující podkres - na mobilu dáváme p-0, aby formulář využil celou šířku */
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-0 md:p-4">
+    
+    {/* Bílý box s formulářem */}
+    <div className="bg-white p-6 rounded-2xl max-w-md w-full relative shadow-2xl 
+                    max-h-[95vh] overflow-y-auto flex flex-col">
+      
+      {/* Zavírací tlačítko - zvětšeno pro lepší klikání palcem */}
+      <button 
+        onClick={closeModal} 
+        className="absolute top-4 right-4 text-gray-500 hover:text-black text-3xl p-2 z-10"
+      >
+        ✕
+      </button>
+
+      {/* Samotný formulář */}
+      <div className="mt-4">
+        <MentoringForm onClose={closeModal} />
+      </div>
+    </div>
+  </div>
+)}
     </main>
   );
 }
