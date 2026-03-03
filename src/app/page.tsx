@@ -15,7 +15,7 @@ import MentoringForm from "./components/MentoringForm";
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // --- ZÁMEK POZADÍ (Ovládá třídy v globals.css) ---
+  // --- ZÁMEK POZADÍ (Safari friendly verze) ---
   useEffect(() => {
     if (isModalOpen) {
       document.documentElement.classList.add("no-scroll");
@@ -42,10 +42,13 @@ export default function HomePage() {
       <Books />
       <Contact />
 
-      {/* 2. Fixní prvky (Cookies) */}
+      {/* 2. Fixní prvky */}
       <CookieConsent />
 
-      {/* 3. MODÁL S FORMULÁŘEM */}
+      {/* Tento modál jen spouští logiku, pokud ho používáš v Hero/Services */}
+      <MentoringModal open={isModalOpen} onClose={closeModal} />
+
+      {/* 3. MODÁL S FORMULÁŘEM - Opravená verze s vnitřním scrollem */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md">
           {/* KONTEJNER MODÁLU - Na mobilu Fullscreen, na PC okno s limitem */}
