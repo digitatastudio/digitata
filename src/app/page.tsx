@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
+// Importy všech sekcí webu
 import Hero from "./components/Hero";
 import About from "./components/About";
 import Services from "./components/Services";
@@ -13,6 +15,7 @@ import MentoringForm from "./components/MentoringForm";
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // --- ZÁMEK POZADÍ (Ovládá třídy v globals.css) ---
   useEffect(() => {
     if (isModalOpen) {
       document.documentElement.classList.add("no-scroll");
@@ -21,35 +24,46 @@ export default function HomePage() {
       document.documentElement.classList.remove("no-scroll");
       document.body.classList.remove("no-scroll");
     }
+    
+    return () => {
+      document.documentElement.classList.remove("no-scroll");
+      document.body.classList.remove("no-scroll");
+    };
   }, [isModalOpen]);
 
   const closeModal = () => setIsModalOpen(false);
 
   return (
     <main className="min-h-screen">
+      {/* 1. Obsah webu */}
       <Hero />
       <About />
       <Services />
       <Books />
       <Contact />
+
+      {/* 2. Fixní prvky (Cookies) */}
       <CookieConsent />
 
-      <MentoringModal open={isModalOpen} onClose={closeModal} />
-
+      {/* 3. MODÁL S FORMULÁŘEM */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md">
-          {/* KONTEJNER MODÁLU - Na mobilu na celou obrazovku, na PC jako okno */}
-          <div className="bg-white w-full h-full md:h-auto md:max-h-[90vh] md:max-w-md md:rounded-[2rem] relative flex flex-col shadow-2xl">
+          {/* KONTEJNER MODÁLU - Na mobilu Fullscreen, na PC okno s limitem */}
+          <div className="bg-white w-full h-full md:h-auto md:max-h-[90vh] md:max-w-md md:rounded-[2rem] relative flex flex-col shadow-2xl overflow-hidden">
             
-            {/* FIXNÍ TLAČÍTKO ZAVŘÍT - Vždy viditelné v pravém rohu */}
+            {/* TLAČÍTKO ZAVŘÍT - Fixní pozice, aby šlo vždy odejít */}
             <button 
               onClick={closeModal}
               className="absolute top-4 right-4 z-[10000] bg-slate-100 p-3 rounded-full text-black hover:bg-slate-200 transition-all shadow-md"
+              aria-label="Zavřít"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </button>
 
-            {/* SCROLLOVACÍ OBLAST FORMULÁŘE */}
+            {/* SCROLLOVACÍ OBLAST FORMULÁŘE - Tady funguje tvůj custom-form-scroll */}
             <div className="flex-1 overflow-y-auto custom-form-scroll px-6 py-20 md:py-12">
               <div className="max-w-sm mx-auto">
                 <MentoringForm onClose={closeModal} />
