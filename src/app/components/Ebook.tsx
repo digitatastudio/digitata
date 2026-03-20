@@ -7,27 +7,29 @@ export default function Ebook() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-12">
-          {/* 1) Emoční restart - NYNÍ AKTIVNÍ */}
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            <img
-              src="/emocnirestart.jpg"
-              alt="Emoční restart"
-              className="w-64 rounded-xl shadow-lg"
-            />
-            <div>
-              <h3 className="text-xl font-bold mb-2">Emoční restart: 7 dní k sobě</h3>
-              <p className="text-gray-700 mb-4">
-                Krátký program pro rodiče po těžkých chvílích. Mini-úkoly na 7 dní.
-              </p>
-              {/* Tlačítko je nyní aktivní a směřuje na sběrný formulář (nebo přímo na soubor) */}
-              <a
-                href="#" // SEM vložíte odkaz na Ecomail formulář, až ho budete mít
-                className="inline-block px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md"
-              >
-                Stáhnout zdarma
-              </a>
-            </div>
-          </div>
+         {/* 1) Emoční restart - NYNÍ AKTIVNÍ */}
+<div className="flex flex-col md:flex-row items-center gap-6">
+  <img
+    src="/emocnirestart.jpg"
+    alt="Emoční restart"
+    className="w-64 rounded-xl shadow-lg"
+  />
+  <div>
+    <h3 className="text-xl font-bold mb-2">Emoční restart: 7 dní k sobě</h3>
+    <p className="text-gray-700 mb-4">
+      Krátký program pro rodiče po těžkých chvílích. Mini-úkoly na 7 dní.
+    </p>
+    {/* Tlačítko teď míří přímo na tvůj PDF soubor ve složce public */}
+    <a
+      href="/emocni-restart.pdf" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="inline-block px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md"
+    >
+      Stáhnout zdarma
+    </a>
+  </div>
+</div>
 
           {/* 2) Táta na furt - ZŮSTÁVÁ STEJNÉ */}
           <div className="flex flex-col md:flex-row items-center gap-6">
