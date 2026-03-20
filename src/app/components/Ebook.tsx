@@ -7,7 +7,7 @@ export default function Ebook() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-12">
-          {/* 1) Emoční restart */}
+          {/* 1) Emoční restart - NYNÍ AKTIVNÍ */}
           <div className="flex flex-col md:flex-row items-center gap-6">
             <img
               src="/emocnirestart.jpg"
@@ -19,16 +19,17 @@ export default function Ebook() {
               <p className="text-gray-700 mb-4">
                 Krátký program pro rodiče po těžkých chvílích. Mini-úkoly na 7 dní.
               </p>
-              <button
-                className="px-4 py-2 rounded-xl bg-gray-200 font-semibold cursor-not-allowed text-gray-500"
-                disabled
+              {/* Tlačítko je nyní aktivní a směřuje na sběrný formulář (nebo přímo na soubor) */}
+              <a
+                href="#" // SEM vložíte odkaz na Ecomail formulář, až ho budete mít
+                className="inline-block px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md"
               >
-                Stáhnout zdarma (brzy)
-              </button>
+                Stáhnout zdarma
+              </a>
             </div>
           </div>
 
-          {/* 2) Táta na furt */}
+          {/* 2) Táta na furt - ZŮSTÁVÁ STEJNÉ */}
           <div className="flex flex-col md:flex-row items-center gap-6">
             <img
               src="/tatanafurt.jpg"
