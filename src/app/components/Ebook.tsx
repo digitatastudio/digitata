@@ -21,7 +21,7 @@ export default function Ebook() {
     </p>
     {/* Tlačítko teď míří přímo na tvůj PDF soubor ve složce public */}
     <a
-      href="/emocni-restart.pdf" 
+      href="/restart.pdf" 
       target="_blank" 
       rel="noopener noreferrer"
       className="inline-block px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md"
