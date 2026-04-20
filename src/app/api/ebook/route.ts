@@ -10,8 +10,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Chybí email" }, { status: 400 });
     }
 
-    // 1. Odeslání do Ecomailu
-    const res = await fetch(`https://api2.ecomailapp.cz/lists/VASE_ID_SEZNAMU/subscribe`, {
+    // 1. Odeslání do Ecomailu - ID seznamu nastaveno na 1
+    const res = await fetch(`https://api2.ecomailapp.cz/lists/1/subscribe`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
