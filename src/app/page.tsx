@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import Hero from "./components/Hero";
 import About from "./components/About";
 import Services from "./components/Services";
-import Books from "./components/Books";
+import Ebook from "./components/Ebook";
 import Contact from "./components/Contact";
 import CookieConsent from "./components/CookieConsent";
 import MentoringModal from "./components/MentoringModal";
@@ -39,7 +39,7 @@ export default function HomePage() {
       <Hero />
       <About />
       <Services />
-      <Books />
+      <Ebook />
       <Contact />
 
       {/* 2. Fixní prvky */}
