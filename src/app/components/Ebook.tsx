@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 export default function Ebook() {
-  // Stavy pro formulář
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -12,28 +11,25 @@ export default function Ebook() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
-
     try {
       const response = await fetch("/api/ebook", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, name }),
       });
-
       const data = await response.json();
-
       if (response.ok && data.ok) {
         setStatus("success");
-        setMessage("Skvělé! E-book je na cestě na tvůj e-mail.");
+        setMessage("Skvělé! Je to v mailu.");
         setEmail("");
         setName("");
       } else {
         setStatus("error");
-        setMessage(data.error || "Něco se pokazilo, zkus to znovu.");
+        setMessage("Chyba, zkus to znovu.");
       }
     } catch (error) {
       setStatus("error");
-      setMessage("Došlo k chybě při odesílání.");
+      setMessage("Chyba odesílání.");
     }
   };
 
@@ -46,72 +42,60 @@ export default function Ebook() {
 
         <div className="grid md:grid-cols-2 gap-12">
           
-          {/* 1) Emoční restart - S FORMULÁŘEM */}
+          {/* 1) Emoční restart - IDENTICKÝ LAYOUT JAKO ORIGINÁL */}
           <div className="flex flex-col md:flex-row items-center gap-6">
             <img
               src="/emocnirestart.jpg"
               alt="Emoční restart"
-              className="w-64 rounded-xl shadow-lg"
+              className="w-48 md:w-64 rounded-xl shadow-lg flex-shrink-0"
             />
-            <div className="w-full">
+            <div className="flex-1">
               <h3 className="text-xl font-bold mb-2">Emoční restart: 7 dní k sobě</h3>
-              <p className="text-gray-700 mb-4 text-sm">
-                Krátký program pro rodiče po těžkých chvílích. Mini-úkoly na 7 dní. Zadej e-mail a pošlu ti ho zdarma.
+              <p className="text-gray-700 mb-4 text-sm leading-snug">
+                Krátký program pro rodiče po těžkých chvílích. Mini-úkoly na 7 dní.
               </p>
 
               {status === "success" ? (
-                <div className="p-3 bg-green-50 border border-green-200 text-green-700 rounded-xl text-sm font-semibold">
-                  {message}
-                </div>
+                <p className="text-green-600 font-bold text-sm animate-bounce">{message}</p>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                  <input
-                    type="text"
-                    placeholder="Tvé jméno (nepovinné)"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#002D62] text-sm"
-                  />
+                <form onSubmit={handleSubmit} className="space-y-2">
                   <input
                     type="email"
                     placeholder="Tvůj e-mail *"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#002D62] text-sm"
+                    className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#002D62] text-sm"
                   />
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md disabled:opacity-50 text-sm"
+                    className="inline-block px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md text-sm disabled:opacity-50"
                   >
-                    {status === "loading" ? "Odesílám..." : "Získat E-book"}
+                    {status === "loading" ? "Počkej..." : "Získat zdarma"}
                   </button>
-                  {status === "error" && (
-                    <p className="text-red-500 text-xs mt-1">{message}</p>
-                  )}
                 </form>
               )}
             </div>
           </div>
 
-          {/* 2) Táta na furt - ZŮSTÁVÁ STEJNÉ */}
+          {/* 2) Táta na furt - IDENTICKÝ LAYOUT */}
           <div className="flex flex-col md:flex-row items-center gap-6">
             <img
               src="/tatanafurt.jpg"
               alt="Táta na furt"
-              className="w-64 rounded-xl shadow-lg"
+              className="w-48 md:w-64 rounded-xl shadow-lg flex-shrink-0"
             />
-            <div>
+            <div className="flex-1">
               <h3 className="text-xl font-bold mb-2">Táta na furt (kniha)</h3>
-              <p className="text-gray-700 mb-4 text-sm">
-                Plnohodnotná kniha o tom, jak být dobrý táta i po rozchodu. Autentická, praktická, lidská.
+              <p className="text-gray-700 mb-4 text-sm leading-snug">
+                Plnohodnotná kniha o tom, jak být dobrý táta i po rozchodu. Praktická a lidská.
               </p>
               <button
-                className="px-6 py-2 rounded-xl bg-gray-200 font-semibold cursor-not-allowed text-gray-500 text-sm"
+                className="px-6 py-2 rounded-xl bg-gray-200 font-semibold cursor-not-allowed text-gray-500 text-sm shadow-sm"
                 disabled
               >
-                Koupit (již brzy)
+                Koupit (brzy)
               </button>
             </div>
           </div>
