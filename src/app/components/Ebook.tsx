@@ -3,38 +3,18 @@
 import { useState } from "react";
 
 export default function Ebook() {
-  // --- LOGIKA FORMULÁŘE (přidáno) ---
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
-
-    try {
-      const response = await fetch("/api/ebook", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.ok) {
-        setStatus("success");
-        setMessage("Skvělé! E-book je na cestě do tvého e-mailu.");
-        setEmail("");
-        setName("");
-      } else {
-        setStatus("error");
-        setMessage(data.error || "Něco se pokazilo, zkus to prosím znovu.");
-      }
-    } catch (error) {
-      setStatus("error");
-      setMessage("Došlo k chybě při odesílání.");
-    }
+    const res = await fetch("/api/ebook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (res.ok) setStatus("success");
   };
 
   return (
@@ -45,7 +25,7 @@ export default function Ebook() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-12">
-          {/* 1) Emoční restart - S FORMULÁŘEM */}
+          {/* 1) Emoční restart */}
           <div className="flex flex-col md:flex-row items-center gap-6">
             <img
               src="/emocnirestart.jpg"
@@ -58,44 +38,31 @@ export default function Ebook() {
                 Krátký program pro rodiče po těžkých chvílích. Mini-úkoly na 7 dní.
               </p>
               
-              {/* Zobrazení po úspěšném odeslání */}
               {status === "success" ? (
-                <div className="p-3 bg-green-100 border border-green-400 text-green-700 rounded-xl text-sm">
-                  {message}
-                </div>
+                <p className="text-green-600 font-bold text-sm">Odesláno do mailu!</p>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                   <input
-                    type="text"
-                    placeholder="Tvé jméno"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#002D62] text-sm"
-                  />
-                  <input
                     type="email"
-                    placeholder="Tvůj e-mail *"
+                    placeholder="Tvůj e-mail"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#002D62] text-sm"
+                    className="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none text-sm w-full"
                   />
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="inline-block px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md disabled:opacity-50"
+                    className="inline-block px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md text-sm text-center"
                   >
-                    {status === "loading" ? "Odesílám..." : "Získat zdarma"}
+                    {status === "loading" ? "..." : "Stáhnout zdarma"}
                   </button>
-                  {status === "error" && (
-                    <p className="text-red-500 text-xs mt-1">{message}</p>
-                  )}
                 </form>
               )}
             </div>
           </div>
 
-          {/* 2) Táta na furt - ZŮSTÁVÁ STEJNÉ */}
+          {/* 2) Táta na furt */}
           <div className="flex flex-col md:flex-row items-center gap-6">
             <img
               src="/tatanafurt.jpg"
