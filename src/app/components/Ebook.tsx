@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 export default function Ebook() {
-  // Stavy pro Emoční restart
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -16,9 +15,7 @@ export default function Ebook() {
     try {
       const response = await fetch("/api/ebook", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, name }),
       });
 
@@ -26,52 +23,57 @@ export default function Ebook() {
 
       if (response.ok && data.ok) {
         setStatus("success");
-        setMessage("Skvělé! E-book Emoční restart je na cestě na tvůj e-mail.");
+        setMessage("Skvělé! E-book je na cestě.");
         setEmail("");
         setName("");
       } else {
         setStatus("error");
-        setMessage(data.error || "Něco se pokazilo, zkus to prosím znovu.");
+        setMessage(data.error || "Něco se pokazilo.");
       }
     } catch (error) {
       setStatus("error");
-      setMessage("Došlo k chybě při odesílání na server.");
+      setMessage("Chyba při odesílání.");
     }
   };
 
   return (
-    <section id="ebooks" className="section py-16 bg-white">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-[#002D62] mb-10 text-center md:text-left">
+    <section id="ebooks" className="py-24 bg-slate-50">
+      <div className="max-w-6xl mx-auto px-6">
+        <h2 className="text-4xl font-extrabold text-[#002D62] mb-16 text-center md:text-left">
           Moje knihy & e-booky
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* 1) Emoční restart - NYNÍ S FORMULÁŘEM PRO ECOMAIL */}
-          <div className="flex flex-col md:flex-row items-center gap-6 bg-gray-50 p-6 rounded-2xl">
-            <img
-              src="/emocnirestart.jpg"
-              alt="Emoční restart"
-              className="w-48 md:w-64 rounded-xl shadow-lg"
-            />
-            <div className="w-full">
-              <h3 className="text-xl font-bold mb-2">Emoční restart: 7 dní k sobě</h3>
-              <p className="text-gray-700 mb-4 text-sm md:text-base">
-                Krátký program pro rodiče po těžkých chvílích. Mini-úkoly na 7 dní. Zadej svůj e-mail a pošlu ti ho zdarma.
+        <div className="grid lg:grid-cols-2 gap-8">
+          
+          {/* 1) Emoční restart - AKTIVNÍ FORMULÁŘ */}
+          <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/60 flex flex-col md:flex-row gap-8 items-start border border-slate-100">
+            <div className="w-full md:w-1/2 flex-shrink-0">
+              <img
+                src="/emocnirestart.jpg"
+                alt="Emoční restart"
+                className="w-full rounded-2xl shadow-lg object-cover aspect-[3/4]"
+              />
+            </div>
+            <div className="flex-1 flex flex-col h-full">
+              <h3 className="text-2xl font-bold text-[#002D62] mb-3 leading-tight">
+                Emoční restart:<br/>7 dní k sobě
+              </h3>
+              <p className="text-slate-600 mb-6 text-sm leading-relaxed">
+                Krátký program pro rodiče po těžkých chvílích. Zadej e-mail a pošlu ti ho zdarma.
               </p>
 
               {status === "success" ? (
-                <div className="p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
-                  <p className="font-semibold">{message}</p>
+                <div className="mt-auto p-4 bg-green-50 border border-green-200 text-green-700 rounded-2xl text-sm font-medium animate-pulse">
+                  {message}
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                <form onSubmit={handleSubmit} className="mt-auto space-y-3">
                   <input
                     type="text"
-                    placeholder="Tvé jméno (nepovinné)"
+                    placeholder="Tvé jméno"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#002D62] text-sm"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002D62] outline-none transition-all text-sm"
                   />
                   <input
                     type="email"
@@ -79,38 +81,39 @@ export default function Ebook() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#002D62] text-sm"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002D62] outline-none transition-all text-sm"
                   />
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="inline-block px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md disabled:opacity-50 text-center"
+                    className="w-full py-4 rounded-xl bg-[#002D62] text-white font-bold hover:bg-[#003d85] transition-all shadow-lg shadow-blue-900/20 disabled:opacity-50"
                   >
-                    {status === "loading" ? "Odesílám..." : "Získat E-book"}
+                    {status === "loading" ? "Odesílám..." : "Získat E-book zdarma"}
                   </button>
-                  {status === "error" && (
-                    <p className="text-red-500 text-xs mt-1">{message}</p>
-                  )}
                 </form>
               )}
             </div>
           </div>
 
-          {/* 2) Táta na furt - ZŮSTÁVÁ STEJNÉ */}
-          <div className="flex flex-col md:flex-row items-center gap-6 p-6">
-            <img
-              src="/tatanafurt.jpg"
-              alt="Táta na furt"
-              className="w-48 md:w-64 rounded-xl shadow-lg opacity-80"
-            />
-            <div>
-              <h3 className="text-xl font-bold mb-2 text-gray-800">Táta na furt (kniha)</h3>
-              <p className="text-gray-600 mb-4 text-sm md:text-base">
-                Plnohodnotná kniha o tom, jak být dobrý táta i po rozchodu. Autentická, praktická, lidská.
+          {/* 2) Táta na furt - JIŽ BRZY */}
+          <div className="bg-white/60 p-8 rounded-[2.5rem] shadow-md flex flex-col md:flex-row gap-8 items-start border border-slate-100 opacity-80">
+            <div className="w-full md:w-1/2 flex-shrink-0">
+              <img
+                src="/tatanafurt.jpg"
+                alt="Táta na furt"
+                className="w-full rounded-2xl shadow-lg grayscale-[20%] object-cover aspect-[3/4]"
+              />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-2xl font-bold text-slate-800 mb-3 leading-tight">
+                Táta na furt<br/>(kniha)
+              </h3>
+              <p className="text-slate-500 mb-8 text-sm leading-relaxed">
+                Plnohodnotná kniha o tom, jak být dobrý táta i po rozchodu. Autentická a lidská.
               </p>
               <button
-                className="px-6 py-2 rounded-xl bg-gray-200 font-semibold cursor-not-allowed text-gray-500 shadow-sm"
                 disabled
+                className="w-full py-4 rounded-xl bg-slate-200 text-slate-500 font-bold cursor-not-allowed"
               >
                 Koupit (již brzy)
               </button>
