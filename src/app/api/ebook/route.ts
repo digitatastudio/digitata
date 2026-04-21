@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Chybí email" }, { status: 400 });
     }
 
-    // 1. Odeslání do Ecomailu - ID seznamu nastaveno na 1
+    // Odeslání do Ecomailu - zkontroluj, jestli máš seznam kontaktů opravdu s ID 1
     const res = await fetch(`https://api2.ecomailapp.cz/lists/1/subscribe`, {
       method: "POST",
       headers: {
@@ -18,33 +18,35 @@ export async function POST(req: Request) {
         "key": process.env.ECOMAIL_API_KEY as string,
       },
       body: JSON.stringify({
-        contact_data: { // OPRAVA: Ecomail vyžaduje název "contact_data"
+        subscriber_data: { // OPRAVA: Pro tento endpoint Ecomail vyžaduje 'subscriber_data'
           email: email,
           name: name || "", 
           tags: ["ebook_2026"] 
         },
-        update_existing: true, // OPRAVA: Ecomail vyžaduje název "update_existing"
+        update_existing: true, 
         trigger_autoresponders: true 
       }),
     });
 
-    // 2. Kontrola, jestli Ecomail nehodil chybu
     if (!res.ok) {
       let errorData;
       try {
-         // Zkusíme přečíst, co přesně se Ecomailu nelíbilo
          errorData = await res.json();
       } catch (e) {
-         errorData = "Ecomail nevrátil čitelnou chybu.";
+         errorData = res.statusText;
       }
       console.error("Ecomail error:", errorData);
-      return NextResponse.json({ ok: false, error: "Chyba při komunikaci s Ecomailem." }, { status: 400 });
+      
+      // TADY JE KOUZLO: Vypíšeme přesnou odpověď Ecomailu rovnou do toho okýnka na webu!
+      return NextResponse.json({ 
+        ok: false, 
+        error: `Ecomail říká: ${JSON.stringify(errorData)}` 
+      }, { status: 400 });
     }
 
     return NextResponse.json({ ok: true });
 
-  } catch (error) {
-    console.error("Kritická chyba serveru:", error);
-    return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 }
