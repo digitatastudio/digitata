@@ -18,25 +18,33 @@ export async function POST(req: Request) {
         "key": process.env.ECOMAIL_API_KEY as string,
       },
       body: JSON.stringify({
-        contact: {
+        contact_data: { // OPRAVA: Ecomail vyžaduje název "contact_data"
           email: email,
-          name: name || "", // Jméno je volitelné
-          tags: ["ebook_2026"] // Tento štítek spustí automatizaci v Ecomailu
+          name: name || "", 
+          tags: ["ebook_2026"] 
         },
-        update: true, 
-        trigger_autoresponders: true // TOTO JE NEJDŮLEŽITĚJŠÍ
+        update_existing: true, // OPRAVA: Ecomail vyžaduje název "update_existing"
+        trigger_autoresponders: true 
       }),
     });
 
+    // 2. Kontrola, jestli Ecomail nehodil chybu
     if (!res.ok) {
-        const errorData = await res.json();
-        console.error("Ecomail error:", errorData);
-        return NextResponse.json({ ok: false, error: "Chyba Ecomailu" }, { status: 500 });
+      let errorData;
+      try {
+         // Zkusíme přečíst, co přesně se Ecomailu nelíbilo
+         errorData = await res.json();
+      } catch (e) {
+         errorData = "Ecomail nevrátil čitelnou chybu.";
+      }
+      console.error("Ecomail error:", errorData);
+      return NextResponse.json({ ok: false, error: "Chyba při komunikaci s Ecomailem." }, { status: 400 });
     }
 
     return NextResponse.json({ ok: true });
 
   } catch (error) {
+    console.error("Kritická chyba serveru:", error);
     return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
   }
 }
