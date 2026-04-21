@@ -9,12 +9,26 @@ export default function Ebook() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
-    const res = await fetch("/api/ebook", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    if (res.ok) setStatus("success");
+    
+    try {
+      const res = await fetch("/api/ebook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      
+      if (res.ok) {
+        setStatus("success");
+      } else {
+        // Pokud to nevyjde, tlačítko se odsekne a ukáže chybu
+        const errorData = await res.json().catch(() => ({}));
+        setStatus("idle");
+        alert("Chyba API: " + (errorData.error || res.statusText || "Neznámá chyba serveru"));
+      }
+    } catch (err: any) {
+      setStatus("idle");
+      alert("Kritická chyba: " + err.message);
+    }
   };
 
   return (
@@ -46,7 +60,8 @@ export default function Ebook() {
                   />
                   <button
                     type="submit"
-                    className="px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md text-sm"
+                    disabled={status === "loading"}
+                    className="px-6 py-2 rounded-xl bg-[#002D62] text-white font-semibold hover:bg-[#003d85] transition-all shadow-md text-sm disabled:opacity-50"
                   >
                     {status === "loading" ? "Posílám..." : "Stáhnout zdarma"}
                   </button>
